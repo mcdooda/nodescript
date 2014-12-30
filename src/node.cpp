@@ -1,8 +1,12 @@
 #include "node.h"
 
-Node::Node()
+Node::Node() :
+	m_firstOutValuePinIndex(-1),
+	m_lastOutValuePinIndex(-2)
 {
-	
+	#ifndef NDEBUG
+	m_currentPinIndex = 0;
+	#endif
 }
 
 Node::~Node()
@@ -12,11 +16,7 @@ Node::~Node()
 
 void Node::optimize()
 {
-	m_inputValuePins.shrink_to_fit();
-	m_inputImpulsePins.shrink_to_fit();
-		
-	m_outputValuePins.shrink_to_fit();
-	m_outputImpulsePins.shrink_to_fit();
+	
 }
 
 const char* Node::getPinName(int pinIndex) const
@@ -31,12 +31,16 @@ NodeRuntime* Node::createRuntime(ScriptRuntime* scriptRuntime, int nodeCall)
 
 void Node::createOutputValues(NodeRuntime* runtime)
 {
-	runtime->createOutputValues(getNumNodes()); // FIX only output values are necessary
+	int numOutputValuePins = m_lastOutValuePinIndex - m_firstOutValuePinIndex + 1;
+	if (numOutputValuePins > 0)
+	{
+		runtime->createOutputValues(numOutputValuePins);
+	}
 }
 
 void Node::clearOutputValues(NodeRuntime* runtime)
 {
-	for (int pinIndex : m_outputValuePins)
+	for (int pinIndex = m_firstOutValuePinIndex; pinIndex <= m_lastOutValuePinIndex; pinIndex++)
 	{
 		runtime->clearOutputValue(pinIndex);
 	}

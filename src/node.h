@@ -31,31 +31,52 @@ class Node
 		
 		virtual NodeRuntime* createRuntime(ScriptRuntime* scriptRuntime, int nodeCall);
 		
-		inline bool debugIsOutputValuePinIndexValid(int outputPinIndex) const { return outputPinIndex >= 0 && outputPinIndex < getNumNodes(); }
+		#ifndef NDEBUG
+		inline bool debugIsOutputValuePinIndexValid(int outputPinIndex) const { return outputPinIndex >= m_firstOutValuePinIndex && outputPinIndex <= m_firstOutValuePinIndex; }
+		#endif
 		
 	protected:
 		template <class T>
 		void inValuePin()
 		{
-			m_inputValuePins.push_back(T::Index);
+			#ifndef NDEBUG
+			assert(m_currentPinIndex == T::Index);
+			m_currentPinIndex++;
+			#endif
 		}
 		
 		template <class T>
 		void inImpulsePin()
 		{
-			m_inputImpulsePins.push_back(T::Index);
+			#ifndef NDEBUG
+			assert(m_currentPinIndex == T::Index);
+			m_currentPinIndex++;
+			static_assert(std::is_same<typename T::ValueType, void>::value, "Impulse pins cannot have a type");
+			#endif
 		}
 		
 		template <class T>
 		void outValuePin()
 		{
-			m_outputValuePins.push_back(T::Index);
+			#ifndef NDEBUG
+			assert(m_currentPinIndex == T::Index);
+			m_currentPinIndex++;
+			#endif
+			if (m_firstOutValuePinIndex == -1)
+			{
+				m_firstOutValuePinIndex = T::Index;
+			}
+			m_lastOutValuePinIndex = T::Index;
 		}
 		
 		template <class T>
 		void outImpulsePin()
 		{
-			m_outputImpulsePins.push_back(T::Index);
+			#ifndef NDEBUG
+			assert(m_currentPinIndex == T::Index);
+			m_currentPinIndex++;
+			static_assert(std::is_same<typename T::ValueType, void>::value, "Impulse pins cannot have a type");
+			#endif
 		}
 		
 		template <class T>
@@ -86,13 +107,13 @@ class Node
 		void createOutputValues(NodeRuntime* runtime);
 		void clearOutputValues(NodeRuntime* runtime);
 		
-		inline int getNumNodes() const { return m_inputValuePins.size() + m_inputImpulsePins.size() + m_outputValuePins.size() + m_outputImpulsePins.size(); }
+		int m_firstOutValuePinIndex;
+		int m_lastOutValuePinIndex;
 		
-		std::vector<int> m_inputValuePins;
-		std::vector<int> m_inputImpulsePins;
+		#ifndef NDEBUG
+		int m_currentPinIndex;
+		#endif
 		
-		std::vector<int> m_outputValuePins;
-		std::vector<int> m_outputImpulsePins;
 }; // Node
 
 typedef Node* (*NodeFactory)();

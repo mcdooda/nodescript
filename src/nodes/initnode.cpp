@@ -1,4 +1,3 @@
-#include <iostream>
 #include "initnode.h"
 #include "../script.h"
 #include "../noderuntime.h"
@@ -11,7 +10,6 @@ InitNode::InitNode()
 
 void InitNode::execute(NodeRuntime* runtime) const
 {
-	std::cout << "INIT!" << std::endl;
 	writePin<IntOutPin>(runtime, 42);
 	impulse<ImpulseOutPin>(runtime);
 }

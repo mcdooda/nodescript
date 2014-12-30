@@ -23,30 +23,38 @@ class NodeRuntime
 		inline void clearCurrentInputPinIndex() { m_currentInputPinIndex = -1; }
 		inline int getCurrentInputPinIndex() const { return m_currentInputPinIndex; }
 		
+		#ifndef NDEBUG
 		bool debugIsOutputValuePinIndexValid(int outputPinIndex) const;
+		#endif
 		
 	private:
 		void createOutputValues(int numValues);
 		void clearOutputValue(int pinIndex);
 		
+		int getOutputValueIndexFromPinIndex(int outputPinIndex) const;
+		
 		template <class T>
 		void readOutputPinAtIndex(int outputPinIndex, T& value)
 		{
 			assert(debugIsOutputValuePinIndexValid(outputPinIndex));
-			readPinValue<T>(m_outputValues[outputPinIndex], value);
+			int index = getOutputValueIndexFromPinIndex(outputPinIndex);
+			readPinValue<T>(m_outputValues[index], value);
 		}
 		
 		template <class T>
 		void readOutputPin(typename T::ValueType& value)
 		{
 			assert(debugIsOutputValuePinIndexValid(T::Index));
-			readPinValue<typename T::ValueType>(m_outputValues[T::Index], value);
+			int index = getOutputValueIndexFromPinIndex(T::Index);
+			readPinValue<typename T::ValueType>(m_outputValues[index], value);
 		}
 	
 		template <class T>
 		void writeOutputPin(typename T::ValueType value)
 		{
-			writePinValue<typename T::ValueType>(m_outputValues[T::Index], value);
+			assert(debugIsOutputValuePinIndexValid(T::Index));
+			int index = getOutputValueIndexFromPinIndex(T::Index);
+			writePinValue<typename T::ValueType>(m_outputValues[index], value);
 		}
 		
 		template <class T>

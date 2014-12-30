@@ -28,7 +28,9 @@ class Script
 		void getInputPin(int nodeCall, int outputPinIndex, Pin& pin);
 		void getOutputPin(int nodeCall, int inputPinIndex, Pin& pin);
 		
+		#ifndef NDEBUG
 		inline bool debugIsNodeCallValid(int nodeCall) const { return nodeCall >= 0 && nodeCall < static_cast<int>(m_nodes.size()); }
+		#endif
 		
 	private:
 		std::vector<Node*> m_nodes;

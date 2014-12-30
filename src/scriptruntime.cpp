@@ -8,13 +8,18 @@
 ScriptRuntime::ScriptRuntime(Script* script) :
 	m_script(script)
 {
-	int numNodes = script->getNumNodes();
+	int numNodes = m_script->getNumNodes();
 	m_nodeRuntimes = new NodeRuntime*[numNodes];
 	memset(m_nodeRuntimes, 0, sizeof(NodeRuntime*) * numNodes);
 }
 
 ScriptRuntime::~ScriptRuntime()
 {
+	int numNodes = m_script->getNumNodes();
+	for (int i = 0; i < numNodes; i++)
+	{
+		delete m_nodeRuntimes[i];
+	}
 	delete m_nodeRuntimes;
 }
 
