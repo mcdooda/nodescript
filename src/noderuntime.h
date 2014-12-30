@@ -3,7 +3,9 @@
 
 #include <map>
 #include <type_traits>
+#include <cassert>
 #include "pin.h"
+#include "pinvalue.h"
 #include "scriptruntime.h"
 
 class Node;
@@ -17,31 +19,34 @@ class NodeRuntime
 		
 		inline int getNodeCall() const { return m_nodeCall; }
 		
+		inline void setCurrentInputPinIndex(int currentInputPinIndex) { m_currentInputPinIndex = currentInputPinIndex; }
+		inline void clearCurrentInputPinIndex() { m_currentInputPinIndex = -1; }
+		inline int getCurrentInputPinIndex() const { return m_currentInputPinIndex; }
+		
+		bool debugIsOutputValuePinIndexValid(int outputPinIndex) const;
+		
+	private:
+		void createOutputValues(int numValues);
+		void clearOutputValue(int pinIndex);
+		
 		template <class T>
-		typename T::PinValueType readOutputPin()
+		void readOutputPinAtIndex(int outputPinIndex, T& value)
 		{
-			return dynamic_cast<typename T::PinTypeValue>(m_outputValues[T::PinIndex].pointerValue);
+			assert(debugIsOutputValuePinIndexValid(outputPinIndex));
+			readPinValue<T>(m_outputValues[outputPinIndex], value);
 		}
 		
 		template <class T>
-		int readOutputPin()
+		void readOutputPin(typename T::ValueType& value)
 		{
-			static_assert(std::is_same<typename T::ValueType, int>::value, "Pin expects an integer value");
-			return m_outputValues[T::PinIndex].intValue;
+			assert(debugIsOutputValuePinIndexValid(T::Index));
+			readPinValue<typename T::ValueType>(m_outputValues[T::Index], value);
 		}
 	
 		template <class T>
-		void writeOutputPin(void* value)
+		void writeOutputPin(typename T::ValueType value)
 		{
-			static_assert(std::is_pointer<typename T::ValueType>::value, "Pin expects a pointer value");
-			m_outputValues[T::Index].pointerValue = value;
-		}
-		
-		template <class T>
-		void writeOutputPin(int value)
-		{
-			static_assert(std::is_same<typename T::ValueType, int>::value, "Pin expects an integer value");
-			m_outputValues[T::Index].intValue = value;
+			writePinValue<typename T::ValueType>(m_outputValues[T::Index], value);
 		}
 		
 		template <class T>
@@ -49,14 +54,6 @@ class NodeRuntime
 		{
 			m_scriptRuntime->impulse(this, T::Index);
 		}
-		
-		inline void setCurrentInputPinIndex(int currentInputPinIndex) { m_currentInputPinIndex = currentInputPinIndex; }
-		inline void clearCurrentInputPinIndex() { m_currentInputPinIndex = -1; }
-		inline int getCurrentInputPinIndex() const { return m_currentInputPinIndex; }
-		
-	private:
-		void createOutputValues(int numValues);
-		void clearOutputValue(int pinIndex);
 		
 		Node* m_node;
 		int m_nodeCall;

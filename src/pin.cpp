@@ -19,7 +19,7 @@ Pin::Pin(const Pin& pin) : Pin(pin.m_nodeCall, pin.m_index)
 	
 }
 
-void Pin::copy(const Pin& pin)
+void Pin::operator=(const Pin& pin)
 {
 	m_nodeCall = pin.m_nodeCall;
 	m_index = pin.m_index;

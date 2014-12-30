@@ -12,7 +12,9 @@ TestNode::TestNode()
 
 void TestNode::execute(NodeRuntime* runtime) const
 {
-	std::cout << "TESTNODE!" << std::endl;
+	int value;
+	readPin<IntInPin>(runtime, value);
+	std::cout << "TESTNODE! " << value << std::endl;
 }
 
 

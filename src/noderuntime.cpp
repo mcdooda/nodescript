@@ -16,6 +16,11 @@ NodeRuntime::~NodeRuntime()
 	delete m_outputValues;
 }
 
+bool NodeRuntime::debugIsOutputValuePinIndexValid(int outputPinIndex) const
+{
+	return m_node->debugIsOutputValuePinIndexValid(outputPinIndex);
+}
+
 void NodeRuntime::createOutputValues(int numValues)
 {
 	m_outputValues = new PinValue[numValues];

@@ -9,6 +9,7 @@ file(
 )
 
 set(CMAKE_CXX_FLAGS "-std=c++11 -g -Wall -Werror")
+#set(CMAKE_CXX_FLAGS "-std=c++11 -O3 -DNDEBUG")
 
 add_executable(
     nodescript

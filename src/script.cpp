@@ -1,4 +1,5 @@
 #include <cassert>
+#include <iostream>
 #include "script.h"
 #include "node.h"
 #include "scriptruntime.h"
@@ -25,6 +26,11 @@ int Script::addNode(Node* node)
 
 void Script::addLink(int nodeCall1, int outputPinIndex, int nodeCall2, int inputPinIndex)
 {
+	assert(debugIsNodeCallValid(nodeCall1));
+	assert(outputPinIndex >= 0);
+	assert(debugIsNodeCallValid(nodeCall2));
+	assert(inputPinIndex >= 0);
+	std::cout << "added link from node #" << nodeCall1 << " pin #" << outputPinIndex << " to node #" << nodeCall2 << " pin #" << inputPinIndex << std::endl;
 	m_outputPins[nodeCall1][outputPinIndex] = Pin(nodeCall2, inputPinIndex);
 	m_inputPins[nodeCall2][inputPinIndex] = Pin(nodeCall1, outputPinIndex);
 }
@@ -52,12 +58,12 @@ int Script::getNumNodes() const
 
 void Script::getInputPin(int nodeCall, int outputPinIndex, Pin& pin)
 {
-	pin.copy(m_outputPins[nodeCall][outputPinIndex]);
+	pin = m_outputPins[nodeCall][outputPinIndex];
 }
 
 void Script::getOutputPin(int nodeCall, int inputPinIndex, Pin& pin)
 {
-	pin.copy(m_inputPins[nodeCall][inputPinIndex]);
+	pin = m_inputPins[nodeCall][inputPinIndex];
 }
 
 

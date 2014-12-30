@@ -11,12 +11,12 @@ class ScriptRuntime
 		~ScriptRuntime();
 		
 		void execute();
-		
 		void impulse(NodeRuntime* nodeRuntime, int outputPinIndex);
-		
-	private:
 		NodeRuntime* getNodeCallRuntime(int nodeCall);
 		
+		inline Script* getScript() const { return m_script; }
+		
+	private:
 		Script* m_script;
 		NodeRuntime** m_nodeRuntimes;
 };

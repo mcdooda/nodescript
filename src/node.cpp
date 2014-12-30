@@ -1,5 +1,4 @@
 #include "node.h"
-#include "noderuntime.h"
 
 Node::Node()
 {
@@ -32,12 +31,7 @@ NodeRuntime* Node::createRuntime(ScriptRuntime* scriptRuntime, int nodeCall)
 
 void Node::createOutputValues(NodeRuntime* runtime)
 {
-	runtime->createOutputValues(
-		  m_inputImpulsePins.size()
-		+ m_inputValuePins.size()
-		+ m_outputImpulsePins.size()
-		+ m_outputValuePins.size()
-	); // FIX only output values are necessary
+	runtime->createOutputValues(getNumNodes()); // FIX only output values are necessary
 }
 
 void Node::clearOutputValues(NodeRuntime* runtime)

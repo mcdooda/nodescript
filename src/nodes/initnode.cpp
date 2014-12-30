@@ -12,8 +12,8 @@ InitNode::InitNode()
 void InitNode::execute(NodeRuntime* runtime) const
 {
 	std::cout << "INIT!" << std::endl;
-	runtime->writeOutputPin<IntOutPin>(42);
-	runtime->impulse<ImpulseOutPin>();
+	writePin<IntOutPin>(runtime, 42);
+	impulse<ImpulseOutPin>(runtime);
 }
 
 void InitNode::addedToScript(Script* script, int nodeCall) const

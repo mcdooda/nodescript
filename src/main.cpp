@@ -19,8 +19,10 @@ int main(int argc, char* argv[])
 			Node* node = engine.getNodeInstance("Test Node 1");
 			int nodeCall = script->addNode(node);
 			script->addLink(initCall, InitNode::ImpulseOutPin::Index, nodeCall, TestNode::ImpulseInPin::Index);
+			script->addLink(initCall, InitNode::IntOutPin::Index, nodeCall, TestNode::IntInPin::Index);
 		}
 	
+		for (int i = 0; i < 10000; i++)
 		{
 			ScriptRuntime* scriptRuntime = script->createRuntime();
 			scriptRuntime->execute();
