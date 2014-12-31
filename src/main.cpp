@@ -22,7 +22,7 @@ int main(int argc, char* argv[])
 			script->addLink(initCall, InitNode::IntOutPin::Index, nodeCall, TestNode::IntInPin::Index);
 		}
 		
-		for (int i = 0; i < 100000; i++)
+		for (int i = 0; i < 10; i++)
 		{
 			ScriptRuntime* scriptRuntime = script->createRuntime();
 			scriptRuntime->execute();

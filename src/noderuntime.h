@@ -17,6 +17,8 @@ class NodeRuntime
 		NodeRuntime(Node* node, ScriptRuntime* scriptRuntime, int nodeCall);
 		virtual ~NodeRuntime();
 		
+		void optimizeLinks();
+		
 		inline int getNodeCall() const { return m_nodeCall; }
 		
 		inline void setCurrentInputPinIndex(int currentInputPinIndex) { m_currentInputPinIndex = currentInputPinIndex; }
@@ -24,29 +26,26 @@ class NodeRuntime
 		inline int getCurrentInputPinIndex() const { return m_currentInputPinIndex; }
 		
 		#ifndef NDEBUG
+		bool debugIsInputValuePinIndexValid(int inputPinIndex) const;
 		bool debugIsOutputValuePinIndexValid(int outputPinIndex) const;
 		#endif
 		
 	private:
+		void createInputValues(int numValues);
 		void createOutputValues(int numValues);
-		void clearOutputValue(int pinIndex);
 		
+		int getInputValueIndexFromPinIndex(int inputPinIndex) const;
 		int getOutputValueIndexFromPinIndex(int outputPinIndex) const;
 		
-		template <class T>
-		void readOutputPinAtIndex(int outputPinIndex, T& value)
-		{
-			assert(debugIsOutputValuePinIndexValid(outputPinIndex));
-			int index = getOutputValueIndexFromPinIndex(outputPinIndex);
-			readPinValue<T>(m_outputValues[index], value);
-		}
+		void optimizeInputValueLinks();
+		void optimizeOutputImpulseLinks();
 		
 		template <class T>
-		void readOutputPin(typename T::ValueType& value)
+		void readInputPin(typename T::ValueType& value)
 		{
-			assert(debugIsOutputValuePinIndexValid(T::Index));
-			int index = getOutputValueIndexFromPinIndex(T::Index);
-			readPinValue<typename T::ValueType>(m_outputValues[index], value);
+			assert(debugIsInputValuePinIndexValid(T::Index));
+			int index = getInputValueIndexFromPinIndex(T::Index);
+			readPinValue<typename T::ValueType>(*m_inputValues[index], value);
 		}
 	
 		template <class T>
@@ -67,9 +66,10 @@ class NodeRuntime
 		int m_nodeCall;
 		
 		int m_currentInputPinIndex;
+		PinValue** m_inputValues;
 		PinValue* m_outputValues;
 		
-		ScriptRuntime* m_scriptRuntime;
+		ScriptRuntime* m_scriptRuntime; // TODO get rid of this
 }; // NodeRuntime
 
 #endif // NODERUNTIME_H

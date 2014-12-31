@@ -30,7 +30,6 @@ Node* ScriptEngine::getNodeInstance(const std::string& nodeName)
 	else
 	{
 		node = m_nodeFactories[nodeName]();
-		node->optimize();
 		m_nodes[nodeName] = node;
 	}
 	return node;

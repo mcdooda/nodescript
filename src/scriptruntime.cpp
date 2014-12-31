@@ -41,6 +41,7 @@ NodeRuntime* ScriptRuntime::getNodeCallRuntime(int nodeCall)
 	{
 		Node* node = m_script->getNode(nodeCall);
 		nodeRuntime = node->createRuntime(this, nodeCall);
+		nodeRuntime->optimizeLinks();
 		m_nodeRuntimes[nodeCall] = nodeRuntime;
 	}
 	return nodeRuntime;

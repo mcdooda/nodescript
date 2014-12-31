@@ -1,3 +1,4 @@
+#include <iostream>
 #include "testnode.h"
 
 TestNode::TestNode()
@@ -13,6 +14,7 @@ void TestNode::execute(NodeRuntime* runtime) const
 {
 	int value;
 	readPin<IntInPin>(runtime, value);
+	std::cout << "Int = " << value << std::endl;
 }
 
 

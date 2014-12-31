@@ -21,8 +21,6 @@ class Node
 		Node();
 		virtual ~Node();
 		
-		virtual void optimize();
-		
 		virtual const char* getPinName(int pinIndex) const;
 		
 		virtual void execute(NodeRuntime* runtime) const = 0;
@@ -32,7 +30,8 @@ class Node
 		virtual NodeRuntime* createRuntime(ScriptRuntime* scriptRuntime, int nodeCall);
 		
 		#ifndef NDEBUG
-		inline bool debugIsOutputValuePinIndexValid(int outputPinIndex) const { return outputPinIndex >= m_firstOutValuePinIndex && outputPinIndex <= m_firstOutValuePinIndex; }
+		bool debugIsInputValuePinIndexValid(int inputPinIndex) const;
+		bool debugIsOutputValuePinIndexValid(int outputPinIndex) const;
 		#endif
 		
 	protected:
@@ -43,6 +42,11 @@ class Node
 			assert(m_currentPinIndex == T::Index);
 			m_currentPinIndex++;
 			#endif
+			if (m_firstInValuePinIndex == -1)
+			{
+				m_firstInValuePinIndex = T::Index;
+			}
+			m_lastInValuePinIndex = T::Index;
 		}
 		
 		template <class T>
@@ -82,6 +86,7 @@ class Node
 		template <class T>
 		void readPin(NodeRuntime* runtime, typename T::ValueType& value) const
 		{
+			/*
 			int nodeCall = runtime->getNodeCall();
 			ScriptRuntime* scriptRuntime = runtime->m_scriptRuntime;
 			Script* script = scriptRuntime->getScript();
@@ -90,6 +95,8 @@ class Node
 			assert(script->debugIsNodeCallValid(outputPin.getNodeCall())); // The input pin is not connected to an other pin!
 			NodeRuntime* inputRuntime = scriptRuntime->getNodeCallRuntime(outputPin.getNodeCall());
 			inputRuntime->readOutputPinAtIndex<typename T::ValueType>(outputPin.getIndex(), value);
+			*/
+			runtime->readInputPin<T>(value);
 		}
 		
 		template <class T>
@@ -104,8 +111,11 @@ class Node
 			runtime->impulse<T>();
 		}
 		
+		void createInputValues(NodeRuntime* runtime);
 		void createOutputValues(NodeRuntime* runtime);
-		void clearOutputValues(NodeRuntime* runtime);
+		
+		int m_firstInValuePinIndex;
+		int m_lastInValuePinIndex;
 		
 		int m_firstOutValuePinIndex;
 		int m_lastOutValuePinIndex;
