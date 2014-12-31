@@ -55,7 +55,7 @@ void ScriptRuntime::optimizeNodeRuntimeLinks()
 	int numNodes = m_script->getNumNodes();
 	for (int nodeCall = 0; nodeCall < numNodes; nodeCall++)
 	{
-		m_nodeRuntimes[nodeCall]->optimizeLinks();
+		m_nodeRuntimes[nodeCall]->optimizeLinks(this);
 	}
 }
 

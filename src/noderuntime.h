@@ -7,20 +7,20 @@
 #include "pin.h"
 #include "pinvalue.h"
 #include "pinimpulse.h"
-#include "scriptruntime.h"
 
 class Node;
+class ScriptRuntime;
 
 class NodeRuntime
 {
 	friend class Node;
 	public:
-		NodeRuntime(Node* node, ScriptRuntime* scriptRuntime, int nodeCall);
+		NodeRuntime(Node* node, int nodeCall);
 		virtual ~NodeRuntime();
 		
 		void execute(int inputPinIndex);
 		
-		void optimizeLinks();
+		void optimizeLinks(ScriptRuntime* scriptRuntime);
 		
 		inline int getNodeCall() const { return m_nodeCall; }
 		
@@ -40,8 +40,8 @@ class NodeRuntime
 		int getOutputValueIndexFromPinIndex(int pinIndex) const;
 		int getOutputImpulseIndexFromPinIndex(int pinIndex) const;
 		
-		void optimizeInputValueLinks();
-		void optimizeOutputImpulseLinks();
+		void optimizeInputValueLinks(ScriptRuntime* scriptRuntime);
+		void optimizeOutputImpulseLinks(ScriptRuntime* scriptRuntime);
 		
 		template <class T>
 		void readInputPin(typename T::ValueType& value)
@@ -79,8 +79,6 @@ class NodeRuntime
 		PinValue** m_inputValues;
 		PinValue* m_outputValues;
 		PinImpulse* m_outputImpulses;
-		
-		ScriptRuntime* m_scriptRuntime; // TODO get rid of this
 }; // NodeRuntime
 
 #endif // NODERUNTIME_H

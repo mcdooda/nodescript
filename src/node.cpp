@@ -27,7 +27,7 @@ const char* Node::getPinName(int pinIndex) const
 
 NodeRuntime* Node::createRuntime(ScriptRuntime* scriptRuntime, int nodeCall)
 {
-	return new NodeRuntime(this, scriptRuntime, nodeCall);
+	return new NodeRuntime(this, nodeCall);
 }
 
 #ifndef NDEBUG
