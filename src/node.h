@@ -43,6 +43,9 @@ class Node
 			#ifndef NDEBUG
 			assert(m_currentPinIndex == T::Index);
 			m_currentPinIndex++;
+			assert(m_firstInImpulsePinIndex == -1);
+			assert(m_firstOutValuePinIndex == -1);
+			assert(m_firstOutImpulsePinIndex == -1);
 			#endif
 			if (m_firstInValuePinIndex == -1)
 			{
@@ -58,6 +61,8 @@ class Node
 			assert(m_currentPinIndex == T::Index);
 			m_currentPinIndex++;
 			static_assert(std::is_same<typename T::ValueType, void>::value, "Impulse pins cannot have a type");
+			assert(m_firstOutValuePinIndex == -1);
+			assert(m_firstOutImpulsePinIndex == -1);
 			#endif
 			if (m_firstInImpulsePinIndex == -1)
 			{
@@ -72,6 +77,7 @@ class Node
 			#ifndef NDEBUG
 			assert(m_currentPinIndex == T::Index);
 			m_currentPinIndex++;
+			assert(m_firstOutImpulsePinIndex == -1);
 			#endif
 			if (m_firstOutValuePinIndex == -1)
 			{

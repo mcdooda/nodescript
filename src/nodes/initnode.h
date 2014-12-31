@@ -10,12 +10,12 @@ class InitNode : public Node
 		
 		enum
 		{
-			ImpulseOutIndex,
-			IntOutIndex
+			IntOutIndex,
+			ImpulseOutIndex
 		};
 		
-		typedef PinInfo<ImpulseOutIndex> ImpulseOutPin;
 		typedef PinInfo<IntOutIndex, int> IntOutPin;
+		typedef PinInfo<ImpulseOutIndex> ImpulseOutPin;
 		
 	public:
 		InitNode();

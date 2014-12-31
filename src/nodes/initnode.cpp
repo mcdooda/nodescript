@@ -4,8 +4,8 @@
 
 InitNode::InitNode()
 {
-	outImpulsePin<ImpulseOutPin>();
 	outValuePin<IntOutPin>();
+	outImpulsePin<ImpulseOutPin>();
 }
 
 void InitNode::execute(NodeRuntime* runtime, int inputPinIndex) const

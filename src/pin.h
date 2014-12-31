@@ -20,7 +20,7 @@ class Pin
 		inline int getNodeCall() const { return m_nodeCall; }
 		inline int getIndex() const { return m_index; }
 		
-		// returns whether tte pin may be connected, can return true for invalid pins
+		// returns whether the pin may be connected, can return true with invalid pins
 		inline bool isConnected() const { return m_nodeCall != -1 || m_index != -1; }
 		
 	private:

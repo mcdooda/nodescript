@@ -65,8 +65,12 @@ class NodeRuntime
 			assert(debugIsOutputImpulsePinIndexValid(T::Index));
 			int index = getOutputImpulseIndexFromPinIndex(T::Index);
 			const PinImpulse& pinImpulse = m_outputImpulses[index];
-			NodeRuntime* outputRuntime = pinImpulse.getNodeRuntime();
-			outputRuntime->execute(pinImpulse.getInputPinIndex());
+			if (pinImpulse.isConnected())
+			{
+				NodeRuntime* outputRuntime = pinImpulse.getNodeRuntime();
+				assert(outputRuntime->debugIsInputImpulsePinIndexValid(pinImpulse.getInputPinIndex()));
+				outputRuntime->execute(pinImpulse.getInputPinIndex());
+			}
 		}
 		
 		Node* m_node;

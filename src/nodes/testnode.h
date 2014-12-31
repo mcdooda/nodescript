@@ -10,17 +10,17 @@ class TestNode : public Node
 		
 		enum
 		{
-			ImpulseInIndex,
 			IntInIndex,
-			ImpulseOutIndex,
-			IntOutIndex
+			ImpulseInIndex,
+			IntOutIndex,
+			ImpulseOutIndex
 		};
 		
-		typedef PinInfo<ImpulseInIndex> ImpulseInPin;
 		typedef PinInfo<IntInIndex, int> IntInPin;
+		typedef PinInfo<ImpulseInIndex> ImpulseInPin;
 		
-		typedef PinInfo<ImpulseOutIndex> ImpulseOutPin;
 		typedef PinInfo<IntOutIndex, int> IntOutPin;
+		typedef PinInfo<ImpulseOutIndex> ImpulseOutPin;
 		
 	public:
 		TestNode();
