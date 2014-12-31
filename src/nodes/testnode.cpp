@@ -10,7 +10,7 @@ TestNode::TestNode()
 	outValuePin<IntOutPin>();
 }
 
-void TestNode::execute(NodeRuntime* runtime) const
+void TestNode::execute(NodeRuntime* runtime, int inputPinIndex) const
 {
 	int value;
 	readPin<IntInPin>(runtime, value);

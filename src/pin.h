@@ -12,13 +12,16 @@ class PinInfo
 class Pin
 {
 	public:
-		Pin();
 		Pin(int nodeCall, int index);
+		Pin();
 		Pin(const Pin& pin);
 		void operator=(const Pin& pin);
 		
 		inline int getNodeCall() const { return m_nodeCall; }
 		inline int getIndex() const { return m_index; }
+		
+		// returns whether tte pin may be connected, can return true for invalid pins
+		inline bool isConnected() const { return m_nodeCall != -1 || m_index != -1; }
 		
 	private:
 		int m_nodeCall;

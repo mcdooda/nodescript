@@ -1,15 +1,13 @@
 #include "pin.h"
 
-Pin::Pin() :
-	m_nodeCall(-1),
-	m_index(-1)
+Pin::Pin(int nodeCall, int index) :
+	m_nodeCall(nodeCall),
+	m_index(index)
 {
 	
 }
 
-Pin::Pin(int nodeCall, int index) :
-	m_nodeCall(nodeCall),
-	m_index(index)
+Pin::Pin() : Pin(-1, -1)
 {
 	
 }

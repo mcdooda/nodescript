@@ -24,6 +24,7 @@ class Script
 		
 		Node* getNode(int nodeCall) const;
 		int getNumNodes() const;
+		inline const std::vector<Node*>& getNodes() const { return m_nodes; }
 		
 		void getInputPin(int nodeCall, int outputPinIndex, Pin& pin);
 		void getOutputPin(int nodeCall, int inputPinIndex, Pin& pin);

@@ -23,15 +23,17 @@ class Node
 		
 		virtual const char* getPinName(int pinIndex) const;
 		
-		virtual void execute(NodeRuntime* runtime) const = 0;
+		virtual void execute(NodeRuntime* runtime, int inputPinIndex) const = 0;
 		
 		virtual void addedToScript(Script* script, int nodeCall) const {}
 		
 		virtual NodeRuntime* createRuntime(ScriptRuntime* scriptRuntime, int nodeCall);
 		
 		#ifndef NDEBUG
-		bool debugIsInputValuePinIndexValid(int inputPinIndex) const;
-		bool debugIsOutputValuePinIndexValid(int outputPinIndex) const;
+		bool debugIsInputValuePinIndexValid(int pinIndex) const;
+		bool debugIsInputImpulsePinIndexValid(int pinIndex) const;
+		bool debugIsOutputValuePinIndexValid(int pinIndex) const;
+		bool debugIsOutputImpulsePinIndexValid(int pinIndex) const;
 		#endif
 		
 	protected:
@@ -57,6 +59,11 @@ class Node
 			m_currentPinIndex++;
 			static_assert(std::is_same<typename T::ValueType, void>::value, "Impulse pins cannot have a type");
 			#endif
+			if (m_firstInImpulsePinIndex == -1)
+			{
+				m_firstInImpulsePinIndex = T::Index;
+			}
+			m_lastInImpulsePinIndex = T::Index;
 		}
 		
 		template <class T>
@@ -81,21 +88,16 @@ class Node
 			m_currentPinIndex++;
 			static_assert(std::is_same<typename T::ValueType, void>::value, "Impulse pins cannot have a type");
 			#endif
+			if (m_firstOutImpulsePinIndex == -1)
+			{
+				m_firstOutImpulsePinIndex = T::Index;
+			}
+			m_lastOutImpulsePinIndex = T::Index;
 		}
 		
 		template <class T>
 		void readPin(NodeRuntime* runtime, typename T::ValueType& value) const
 		{
-			/*
-			int nodeCall = runtime->getNodeCall();
-			ScriptRuntime* scriptRuntime = runtime->m_scriptRuntime;
-			Script* script = scriptRuntime->getScript();
-			Pin outputPin;
-			script->getOutputPin(nodeCall, T::Index, outputPin);
-			assert(script->debugIsNodeCallValid(outputPin.getNodeCall())); // The input pin is not connected to an other pin!
-			NodeRuntime* inputRuntime = scriptRuntime->getNodeCallRuntime(outputPin.getNodeCall());
-			inputRuntime->readOutputPinAtIndex<typename T::ValueType>(outputPin.getIndex(), value);
-			*/
 			runtime->readInputPin<T>(value);
 		}
 		
@@ -113,12 +115,19 @@ class Node
 		
 		void createInputValues(NodeRuntime* runtime);
 		void createOutputValues(NodeRuntime* runtime);
+		void createOutputImpulses(NodeRuntime* runtime);
 		
 		int m_firstInValuePinIndex;
 		int m_lastInValuePinIndex;
 		
+		int m_firstInImpulsePinIndex;
+		int m_lastInImpulsePinIndex;
+		
 		int m_firstOutValuePinIndex;
 		int m_lastOutValuePinIndex;
+		
+		int m_firstOutImpulsePinIndex;
+		int m_lastOutImpulsePinIndex;
 		
 		#ifndef NDEBUG
 		int m_currentPinIndex;

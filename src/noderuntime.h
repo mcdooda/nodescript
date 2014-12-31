@@ -6,6 +6,7 @@
 #include <cassert>
 #include "pin.h"
 #include "pinvalue.h"
+#include "pinimpulse.h"
 #include "scriptruntime.h"
 
 class Node;
@@ -17,25 +18,27 @@ class NodeRuntime
 		NodeRuntime(Node* node, ScriptRuntime* scriptRuntime, int nodeCall);
 		virtual ~NodeRuntime();
 		
+		void execute(int inputPinIndex);
+		
 		void optimizeLinks();
 		
 		inline int getNodeCall() const { return m_nodeCall; }
 		
-		inline void setCurrentInputPinIndex(int currentInputPinIndex) { m_currentInputPinIndex = currentInputPinIndex; }
-		inline void clearCurrentInputPinIndex() { m_currentInputPinIndex = -1; }
-		inline int getCurrentInputPinIndex() const { return m_currentInputPinIndex; }
-		
 		#ifndef NDEBUG
-		bool debugIsInputValuePinIndexValid(int inputPinIndex) const;
-		bool debugIsOutputValuePinIndexValid(int outputPinIndex) const;
+		bool debugIsInputValuePinIndexValid(int pinIndex) const;
+		bool debugIsInputImpulsePinIndexValid(int pinIndex) const;
+		bool debugIsOutputValuePinIndexValid(int pinIndex) const;
+		bool debugIsOutputImpulsePinIndexValid(int pinIndex) const;
 		#endif
 		
 	private:
 		void createInputValues(int numValues);
 		void createOutputValues(int numValues);
+		void createOutputImpulses(int numImpulses);
 		
-		int getInputValueIndexFromPinIndex(int inputPinIndex) const;
-		int getOutputValueIndexFromPinIndex(int outputPinIndex) const;
+		int getInputValueIndexFromPinIndex(int pinIndex) const;
+		int getOutputValueIndexFromPinIndex(int pinIndex) const;
+		int getOutputImpulseIndexFromPinIndex(int pinIndex) const;
 		
 		void optimizeInputValueLinks();
 		void optimizeOutputImpulseLinks();
@@ -59,15 +62,19 @@ class NodeRuntime
 		template <class T>
 		void impulse()
 		{
-			m_scriptRuntime->impulse(this, T::Index);
+			assert(debugIsOutputImpulsePinIndexValid(T::Index));
+			int index = getOutputImpulseIndexFromPinIndex(T::Index);
+			const PinImpulse& pinImpulse = m_outputImpulses[index];
+			NodeRuntime* outputRuntime = pinImpulse.getNodeRuntime();
+			outputRuntime->execute(pinImpulse.getInputPinIndex());
 		}
 		
 		Node* m_node;
 		int m_nodeCall;
 		
-		int m_currentInputPinIndex;
 		PinValue** m_inputValues;
 		PinValue* m_outputValues;
+		PinImpulse* m_outputImpulses;
 		
 		ScriptRuntime* m_scriptRuntime; // TODO get rid of this
 }; // NodeRuntime

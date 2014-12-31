@@ -8,9 +8,8 @@
 ScriptRuntime::ScriptRuntime(Script* script) :
 	m_script(script)
 {
-	int numNodes = m_script->getNumNodes();
-	m_nodeRuntimes = new NodeRuntime*[numNodes];
-	memset(m_nodeRuntimes, 0, sizeof(NodeRuntime*) * numNodes);
+	createNodeRuntimes();
+	optimizeNodeRuntimeLinks();
 }
 
 ScriptRuntime::~ScriptRuntime()
@@ -28,34 +27,36 @@ void ScriptRuntime::execute()
 	for (int nodeCall : m_script->getEntryPoints())
 	{
 		NodeRuntime* nodeRuntime = getNodeCallRuntime(nodeCall);
-		Node* node = m_script->getNode(nodeCall);
-		node->execute(nodeRuntime);
+		nodeRuntime->execute(-1);
 	}
 }
 
-NodeRuntime* ScriptRuntime::getNodeCallRuntime(int nodeCall)
+NodeRuntime* ScriptRuntime::getNodeCallRuntime(int nodeCall) const
 {
 	assert(m_script->debugIsNodeCallValid(nodeCall));
-	NodeRuntime* nodeRuntime = m_nodeRuntimes[nodeCall];
-	if (nodeRuntime == nullptr)
-	{
-		Node* node = m_script->getNode(nodeCall);
-		nodeRuntime = node->createRuntime(this, nodeCall);
-		nodeRuntime->optimizeLinks();
-		m_nodeRuntimes[nodeCall] = nodeRuntime;
-	}
-	return nodeRuntime;
+	return m_nodeRuntimes[nodeCall];
 }
 
-void ScriptRuntime::impulse(NodeRuntime* nodeRuntime, int outputPinIndex)
+void ScriptRuntime::createNodeRuntimes()
 {
-	Pin inputPin;
-	m_script->getInputPin(nodeRuntime->getNodeCall(), outputPinIndex, inputPin);
-	NodeRuntime* inputNodeRuntime = getNodeCallRuntime(inputPin.getNodeCall());
-	inputNodeRuntime->setCurrentInputPinIndex(inputPin.getIndex());
-	Node* inputNode = m_script->getNode(inputPin.getNodeCall());
-	inputNode->execute(inputNodeRuntime);
-	inputNodeRuntime->clearCurrentInputPinIndex();
+	int numNodes = m_script->getNumNodes();
+	m_nodeRuntimes = new NodeRuntime*[numNodes];
+	int nodeCall = 0;
+	for (Node* node : m_script->getNodes())
+	{
+		NodeRuntime* nodeRuntime = node->createRuntime(this, nodeCall);
+		m_nodeRuntimes[nodeCall] = nodeRuntime;
+		nodeCall++;
+	}
+}
+
+void ScriptRuntime::optimizeNodeRuntimeLinks()
+{
+	int numNodes = m_script->getNumNodes();
+	for (int nodeCall = 0; nodeCall < numNodes; nodeCall++)
+	{
+		m_nodeRuntimes[nodeCall]->optimizeLinks();
+	}
 }
 
 

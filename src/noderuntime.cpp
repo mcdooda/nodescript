@@ -1,23 +1,31 @@
 #include <cstring>
 #include "noderuntime.h"
 #include "node.h"
+#include "pinimpulse.h"
 
 NodeRuntime::NodeRuntime(Node* node, ScriptRuntime* scriptRuntime, int nodeCall) :
 	m_node(node),
 	m_nodeCall(nodeCall),
-	m_currentInputPinIndex(-1),
 	m_inputValues(nullptr),
 	m_outputValues(nullptr),
+	m_outputImpulses(nullptr),
 	m_scriptRuntime(scriptRuntime)
 {
-	node->createInputValues(this);
-	node->createOutputValues(this);
+	m_node->createInputValues(this);
+	m_node->createOutputValues(this);
+	m_node->createOutputImpulses(this);
 }
 
 NodeRuntime::~NodeRuntime()
 {
 	delete m_inputValues;
 	delete m_outputValues;
+	delete m_outputImpulses;
+}
+
+void NodeRuntime::execute(int inputPinIndex)
+{
+	m_node->execute(this, inputPinIndex);
 }
 
 void NodeRuntime::optimizeLinks()
@@ -27,14 +35,24 @@ void NodeRuntime::optimizeLinks()
 }
 
 #ifndef NDEBUG
-bool NodeRuntime::debugIsInputValuePinIndexValid(int inputPinIndex) const
+bool NodeRuntime::debugIsInputValuePinIndexValid(int pinIndex) const
 {
-	return m_node->debugIsInputValuePinIndexValid(inputPinIndex);
+	return m_node->debugIsInputValuePinIndexValid(pinIndex);
 }
 
-bool NodeRuntime::debugIsOutputValuePinIndexValid(int outputPinIndex) const
+bool NodeRuntime::debugIsInputImpulsePinIndexValid(int pinIndex) const
 {
-	return m_node->debugIsOutputValuePinIndexValid(outputPinIndex);
+	return m_node->debugIsInputImpulsePinIndexValid(pinIndex);
+}
+
+bool NodeRuntime::debugIsOutputValuePinIndexValid(int pinIndex) const
+{
+	return m_node->debugIsOutputValuePinIndexValid(pinIndex);
+}
+
+bool NodeRuntime::debugIsOutputImpulsePinIndexValid(int pinIndex) const
+{
+	return m_node->debugIsOutputImpulsePinIndexValid(pinIndex);
 }
 #endif
 
@@ -50,14 +68,24 @@ void NodeRuntime::createOutputValues(int numValues)
 	memset(m_outputValues, 0, sizeof(PinValue) * numValues);
 }
 
-int NodeRuntime::getInputValueIndexFromPinIndex(int inputPinIndex) const
+void NodeRuntime::createOutputImpulses(int numImpulses)
 {
-	return inputPinIndex - m_node->m_firstInValuePinIndex;
+	m_outputImpulses = new PinImpulse[numImpulses];
 }
 
-int NodeRuntime::getOutputValueIndexFromPinIndex(int outputPinIndex) const
+int NodeRuntime::getInputValueIndexFromPinIndex(int pinIndex) const
 {
-	return outputPinIndex - m_node->m_firstOutValuePinIndex;
+	return pinIndex - m_node->m_firstInValuePinIndex;
+}
+
+int NodeRuntime::getOutputValueIndexFromPinIndex(int pinIndex) const
+{
+	return pinIndex - m_node->m_firstOutValuePinIndex;
+}
+
+int NodeRuntime::getOutputImpulseIndexFromPinIndex(int pinIndex) const
+{
+	return pinIndex - m_node->m_firstOutImpulsePinIndex;
 }
 
 void NodeRuntime::optimizeInputValueLinks()
@@ -78,7 +106,20 @@ void NodeRuntime::optimizeInputValueLinks()
 
 void NodeRuntime::optimizeOutputImpulseLinks()
 {
-	
+	Script* script = m_scriptRuntime->getScript();
+	Pin inputPin;
+	for (int pinIndex = m_node->m_firstOutImpulsePinIndex; pinIndex <= m_node->m_lastOutImpulsePinIndex; pinIndex++)
+	{
+		script->getInputPin(m_nodeCall, pinIndex, inputPin);
+		if (inputPin.isConnected())
+		{
+			assert(script->debugIsNodeCallValid(inputPin.getNodeCall())); // The output node is invalid
+			NodeRuntime* outputRuntime = m_scriptRuntime->getNodeCallRuntime(inputPin.getNodeCall());
+			assert(outputRuntime->debugIsInputImpulsePinIndexValid(inputPin.getIndex())); // The input pin is invalid
+			int outIndex = getOutputImpulseIndexFromPinIndex(pinIndex);
+			m_outputImpulses[outIndex] = PinImpulse(outputRuntime, inputPin.getIndex());
+		}
+	}
 }
 
 
