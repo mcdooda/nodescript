@@ -8,8 +8,8 @@ file(
     src/*
 )
 
-set(CMAKE_CXX_FLAGS "-std=c++11 -g -Wall -Werror")
-#set(CMAKE_CXX_FLAGS "-std=c++11 -O3 -DNDEBUG")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 -Wall -Werror")
+set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -DNDEBUG")
 
 add_executable(
     nodescript
