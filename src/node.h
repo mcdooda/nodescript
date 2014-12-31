@@ -21,19 +21,19 @@ class Node
 		Node();
 		virtual ~Node();
 		
-		virtual const char* getPinName(int pinIndex) const;
+		virtual const char* getPinName(PinIndex pinIndex) const;
 		
-		virtual void execute(NodeRuntime* runtime, int inputPinIndex) const = 0;
+		virtual void execute(NodeRuntime* runtime, PinIndex inputPinIndex) const = 0;
 		
 		virtual void addedToScript(Script* script, int nodeCall) const {}
 		
 		virtual NodeRuntime* createRuntime(ScriptRuntime* scriptRuntime, int nodeCall);
 		
 		#ifndef NDEBUG
-		bool debugIsInputValuePinIndexValid(int pinIndex) const;
-		bool debugIsInputImpulsePinIndexValid(int pinIndex) const;
-		bool debugIsOutputValuePinIndexValid(int pinIndex) const;
-		bool debugIsOutputImpulsePinIndexValid(int pinIndex) const;
+		bool debugIsInputValuePinIndexValid(PinIndex pinIndex) const;
+		bool debugIsInputImpulsePinIndexValid(PinIndex pinIndex) const;
+		bool debugIsOutputValuePinIndexValid(PinIndex pinIndex) const;
+		bool debugIsOutputImpulsePinIndexValid(PinIndex pinIndex) const;
 		#endif
 		
 	protected:
@@ -58,9 +58,9 @@ class Node
 		void inImpulsePin()
 		{
 			#ifndef NDEBUG
+			static_assert(std::is_same<typename T::ValueType, void>::value, "Impulse pins cannot have a type");
 			assert(m_currentPinIndex == T::Index);
 			m_currentPinIndex++;
-			static_assert(std::is_same<typename T::ValueType, void>::value, "Impulse pins cannot have a type");
 			assert(m_firstOutValuePinIndex == -1);
 			assert(m_firstOutImpulsePinIndex == -1);
 			#endif
@@ -90,9 +90,9 @@ class Node
 		void outImpulsePin()
 		{
 			#ifndef NDEBUG
+			static_assert(std::is_same<typename T::ValueType, void>::value, "Impulse pins cannot have a type");
 			assert(m_currentPinIndex == T::Index);
 			m_currentPinIndex++;
-			static_assert(std::is_same<typename T::ValueType, void>::value, "Impulse pins cannot have a type");
 			#endif
 			if (m_firstOutImpulsePinIndex == -1)
 			{
@@ -119,24 +119,20 @@ class Node
 			runtime->impulse<T>();
 		}
 		
-		void createInputValues(NodeRuntime* runtime);
-		void createOutputValues(NodeRuntime* runtime);
-		void createOutputImpulses(NodeRuntime* runtime);
+		PinIndex m_firstInValuePinIndex;
+		PinIndex m_lastInValuePinIndex;
 		
-		int m_firstInValuePinIndex;
-		int m_lastInValuePinIndex;
+		PinIndex m_firstInImpulsePinIndex;
+		PinIndex m_lastInImpulsePinIndex;
 		
-		int m_firstInImpulsePinIndex;
-		int m_lastInImpulsePinIndex;
+		PinIndex m_firstOutValuePinIndex;
+		PinIndex m_lastOutValuePinIndex;
 		
-		int m_firstOutValuePinIndex;
-		int m_lastOutValuePinIndex;
-		
-		int m_firstOutImpulsePinIndex;
-		int m_lastOutImpulsePinIndex;
+		PinIndex m_firstOutImpulsePinIndex;
+		PinIndex m_lastOutImpulsePinIndex;
 		
 		#ifndef NDEBUG
-		int m_currentPinIndex;
+		PinIndex m_currentPinIndex;
 		#endif
 		
 }; // Node

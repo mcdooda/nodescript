@@ -24,7 +24,7 @@ class TestNode : public Node
 		
 	public:
 		TestNode();
-		void execute(NodeRuntime* runtime, int inputPinIndex) const override;
+		void execute(NodeRuntime* runtime, PinIndex inputPinIndex) const override;
 }; // TestNode
 
 #endif // TESTNODE_H

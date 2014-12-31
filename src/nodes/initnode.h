@@ -19,7 +19,7 @@ class InitNode : public Node
 		
 	public:
 		InitNode();
-		void execute(NodeRuntime* runtime, int inputPinIndex) const override;
+		void execute(NodeRuntime* runtime, PinIndex inputPinIndex) const override;
 		void addedToScript(Script* script, int nodeCall) const override;
 		
 }; // TestNode

@@ -32,9 +32,9 @@ class NodeRuntime
 		#endif
 		
 	private:
-		void createInputValues(int numValues);
-		void createOutputValues(int numValues);
-		void createOutputImpulses(int numImpulses);
+		void createInputValues();
+		void createOutputValues();
+		void createOutputImpulses();
 		
 		int getInputValueIndexFromPinIndex(int pinIndex) const;
 		int getOutputValueIndexFromPinIndex(int pinIndex) const;

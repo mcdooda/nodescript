@@ -11,9 +11,9 @@ NodeRuntime::NodeRuntime(Node* node, int nodeCall) :
 	m_outputValues(nullptr),
 	m_outputImpulses(nullptr)
 {
-	m_node->createInputValues(this);
-	m_node->createOutputValues(this);
-	m_node->createOutputImpulses(this);
+	createInputValues();
+	createOutputValues();
+	createOutputImpulses();
 }
 
 NodeRuntime::~NodeRuntime()
@@ -56,21 +56,33 @@ bool NodeRuntime::debugIsOutputImpulsePinIndexValid(int pinIndex) const
 }
 #endif
 
-void NodeRuntime::createInputValues(int numValues)
+void NodeRuntime::createInputValues()
 {
-	m_inputValues = new PinValue*[numValues];
-	memset(m_inputValues, 0, sizeof(PinValue*) * numValues);
+	int numValues = m_node->m_lastInValuePinIndex - m_node->m_firstInValuePinIndex + 1;
+	if (numValues > 0)
+	{
+		m_inputValues = new PinValue*[numValues];
+		memset(m_inputValues, 0, sizeof(PinValue*) * numValues);
+	}
 }
 
-void NodeRuntime::createOutputValues(int numValues)
+void NodeRuntime::createOutputValues()
 {
-	m_outputValues = new PinValue[numValues];
-	memset(m_outputValues, 0, sizeof(PinValue) * numValues);
+	int numValues = m_node->m_lastOutValuePinIndex - m_node->m_firstOutValuePinIndex + 1;
+	if (numValues > 0)
+	{
+		m_outputValues = new PinValue[numValues];
+		memset(m_outputValues, 0, sizeof(PinValue) * numValues);
+	}
 }
 
-void NodeRuntime::createOutputImpulses(int numImpulses)
+void NodeRuntime::createOutputImpulses()
 {
-	m_outputImpulses = new PinImpulse[numImpulses];
+	int numImpulses = m_node->m_lastOutImpulsePinIndex - m_node->m_firstOutImpulsePinIndex + 1;
+	if (numImpulses > 0)
+	{
+		m_outputImpulses = new PinImpulse[numImpulses];
+	}
 }
 
 int NodeRuntime::getInputValueIndexFromPinIndex(int pinIndex) const

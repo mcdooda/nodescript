@@ -1,6 +1,6 @@
 #include "pinimpulse.h"
 
-PinImpulse::PinImpulse(NodeRuntime* nodeRuntime, int inputPinIndex) :
+PinImpulse::PinImpulse(NodeRuntime* nodeRuntime, PinIndex inputPinIndex) :
 	m_nodeRuntime(nodeRuntime),
 	m_inputPinIndex(inputPinIndex)
 {

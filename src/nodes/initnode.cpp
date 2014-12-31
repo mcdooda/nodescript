@@ -8,7 +8,7 @@ InitNode::InitNode()
 	outImpulsePin<ImpulseOutPin>();
 }
 
-void InitNode::execute(NodeRuntime* runtime, int inputPinIndex) const
+void InitNode::execute(NodeRuntime* runtime, PinIndex inputPinIndex) const
 {
 	writePin<IntOutPin>(runtime, 42);
 	impulse<ImpulseOutPin>(runtime);

@@ -1,6 +1,6 @@
 #include "pin.h"
 
-Pin::Pin(int nodeCall, int index) :
+Pin::Pin(int nodeCall, PinIndex index) :
 	m_nodeCall(nodeCall),
 	m_index(index)
 {

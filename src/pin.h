@@ -1,6 +1,8 @@
 #ifndef PIN_H
 #define PIN_H
 
+typedef char PinIndex;
+
 template <int Index_, class ValueType_ = void>
 class PinInfo
 {
@@ -12,20 +14,20 @@ class PinInfo
 class Pin
 {
 	public:
-		Pin(int nodeCall, int index);
+		Pin(int nodeCall, PinIndex index);
 		Pin();
 		Pin(const Pin& pin);
 		void operator=(const Pin& pin);
 		
 		inline int getNodeCall() const { return m_nodeCall; }
-		inline int getIndex() const { return m_index; }
+		inline PinIndex getIndex() const { return m_index; }
 		
 		// returns whether the pin may be connected, can return true with invalid pins
 		inline bool isConnected() const { return m_nodeCall != -1 || m_index != -1; }
 		
 	private:
 		int m_nodeCall;
-		int m_index;
+		PinIndex m_index;
 };
 
 #endif // PIN_H

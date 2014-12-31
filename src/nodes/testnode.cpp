@@ -10,7 +10,7 @@ TestNode::TestNode()
 	outImpulsePin<ImpulseOutPin>();
 }
 
-void TestNode::execute(NodeRuntime* runtime, int inputPinIndex) const
+void TestNode::execute(NodeRuntime* runtime, PinIndex inputPinIndex) const
 {
 	int value;
 	readPin<IntInPin>(runtime, value);
