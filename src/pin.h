@@ -3,6 +3,15 @@
 
 typedef char PinIndex;
 
+enum
+{
+	INVALID_PIN_INDEX_MIN_1           = -127,
+	INVALID_PIN_INDEX_MIN_2           = -128,
+	INVALID_PIN_INDEX                 = -1,
+	ENTRY_POINT_PIN_INDEX             = -2,
+	FUNCTIONAL_AUTO_EXECUTE_PIN_INDEX = -3
+};
+
 template <int Index_, class ValueType_ = void>
 class PinInfo
 {
@@ -23,7 +32,7 @@ class Pin
 		inline PinIndex getIndex() const { return m_index; }
 		
 		// returns whether the pin may be connected, can return true with invalid pins
-		inline bool isConnected() const { return m_nodeCall != -1 || m_index != -1; }
+		inline bool isConnected() const { return m_nodeCall != -1 || m_index != INVALID_PIN_INDEX; }
 		
 	private:
 		int m_nodeCall;

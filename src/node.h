@@ -10,9 +10,22 @@
 class NodeRuntime;
 class ScriptRuntime;
 
+#define NODE_FACTORY(NodeConstructor) \
+	static Node* factory() { return NodeConstructor; } \
+
+
+#ifndef NDEBUG
+#define NODE_NAME(NodeName) \
+	static const char* nodeName() { return NodeName; } \
+	const char* debugGetNodeName() const override { return NodeName; }
+#else
+#define NODE_NAME(NodeName) \
+	static const char* nodeName() { return NodeName; }
+#endif
+
 #define NODE(NodeType, NodeName) \
-	static Node* factory() { return new NodeType(); } \
-	static const std::string getNodeName() { return NodeName; }
+	NODE_FACTORY(new NodeType()) \
+	NODE_NAME(NodeName)
 
 class Node
 {
@@ -21,6 +34,11 @@ class Node
 		Node();
 		virtual ~Node();
 		
+		virtual bool isFunctional() const { return false; }
+		
+		#ifndef NDEBUG
+		virtual const char* debugGetNodeName() const;
+		#endif
 		virtual const char* getPinName(PinIndex pinIndex) const;
 		
 		virtual void execute(NodeRuntime* runtime, PinIndex inputPinIndex) const = 0;
@@ -34,6 +52,8 @@ class Node
 		bool debugIsInputImpulsePinIndexValid(PinIndex pinIndex) const;
 		bool debugIsOutputValuePinIndexValid(PinIndex pinIndex) const;
 		bool debugIsOutputImpulsePinIndexValid(PinIndex pinIndex) const;
+		const char* debugGetPinType(PinIndex pinIndex) const;
+		void debugPrintPins() const;
 		#endif
 		
 	protected:
@@ -41,13 +61,13 @@ class Node
 		void inValuePin()
 		{
 			#ifndef NDEBUG
-			assert(m_currentPinIndex == T::Index);
-			m_currentPinIndex++;
-			assert(m_firstInImpulsePinIndex == -1);
-			assert(m_firstOutValuePinIndex == -1);
-			assert(m_firstOutImpulsePinIndex == -1);
+			assert(m_debugCurrentPinIndex == T::Index);
+			m_debugCurrentPinIndex++;
+			assert(m_firstInImpulsePinIndex == INVALID_PIN_INDEX_MIN_1);
+			assert(m_firstOutValuePinIndex == INVALID_PIN_INDEX_MIN_1);
+			assert(m_firstOutImpulsePinIndex == INVALID_PIN_INDEX_MIN_1);
 			#endif
-			if (m_firstInValuePinIndex == -1)
+			if (m_firstInValuePinIndex == INVALID_PIN_INDEX_MIN_1)
 			{
 				m_firstInValuePinIndex = T::Index;
 			}
@@ -59,12 +79,13 @@ class Node
 		{
 			#ifndef NDEBUG
 			static_assert(std::is_same<typename T::ValueType, void>::value, "Impulse pins cannot have a type");
-			assert(m_currentPinIndex == T::Index);
-			m_currentPinIndex++;
-			assert(m_firstOutValuePinIndex == -1);
-			assert(m_firstOutImpulsePinIndex == -1);
+			assert(!isFunctional());
+			assert(m_debugCurrentPinIndex == T::Index);
+			m_debugCurrentPinIndex++;
+			assert(m_firstOutValuePinIndex == INVALID_PIN_INDEX_MIN_1);
+			assert(m_firstOutImpulsePinIndex == INVALID_PIN_INDEX_MIN_1);
 			#endif
-			if (m_firstInImpulsePinIndex == -1)
+			if (m_firstInImpulsePinIndex == INVALID_PIN_INDEX_MIN_1)
 			{
 				m_firstInImpulsePinIndex = T::Index;
 			}
@@ -75,11 +96,11 @@ class Node
 		void outValuePin()
 		{
 			#ifndef NDEBUG
-			assert(m_currentPinIndex == T::Index);
-			m_currentPinIndex++;
-			assert(m_firstOutImpulsePinIndex == -1);
+			assert(m_debugCurrentPinIndex == T::Index);
+			m_debugCurrentPinIndex++;
+			assert(m_firstOutImpulsePinIndex == INVALID_PIN_INDEX_MIN_1);
 			#endif
-			if (m_firstOutValuePinIndex == -1)
+			if (m_firstOutValuePinIndex == INVALID_PIN_INDEX_MIN_1)
 			{
 				m_firstOutValuePinIndex = T::Index;
 			}
@@ -91,10 +112,10 @@ class Node
 		{
 			#ifndef NDEBUG
 			static_assert(std::is_same<typename T::ValueType, void>::value, "Impulse pins cannot have a type");
-			assert(m_currentPinIndex == T::Index);
-			m_currentPinIndex++;
+			assert(m_debugCurrentPinIndex == T::Index);
+			m_debugCurrentPinIndex++;
 			#endif
-			if (m_firstOutImpulsePinIndex == -1)
+			if (m_firstOutImpulsePinIndex == INVALID_PIN_INDEX_MIN_1)
 			{
 				m_firstOutImpulsePinIndex = T::Index;
 			}
@@ -104,13 +125,13 @@ class Node
 		template <class T>
 		void readPin(NodeRuntime* runtime, typename T::ValueType& value) const
 		{
-			runtime->readInputPin<T>(value);
+			runtime->readPin<T>(value);
 		}
 		
 		template <class T>
 		void writePin(NodeRuntime* runtime, typename T::ValueType value) const
 		{
-			runtime->writeOutputPin<T>(value);
+			runtime->writePin<T>(value);
 		}
 		
 		template <class T>
@@ -132,7 +153,7 @@ class Node
 		PinIndex m_lastOutImpulsePinIndex;
 		
 		#ifndef NDEBUG
-		PinIndex m_currentPinIndex;
+		PinIndex m_debugCurrentPinIndex;
 		#endif
 		
 }; // Node

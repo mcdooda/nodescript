@@ -7,7 +7,7 @@ PinImpulse::PinImpulse(NodeRuntime* nodeRuntime, PinIndex inputPinIndex) :
 	
 }
 
-PinImpulse::PinImpulse() : PinImpulse(nullptr, -1)
+PinImpulse::PinImpulse() : PinImpulse(nullptr, INVALID_PIN_INDEX)
 {
 	
 }

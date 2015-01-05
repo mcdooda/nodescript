@@ -7,7 +7,7 @@ Pin::Pin(int nodeCall, PinIndex index) :
 	
 }
 
-Pin::Pin() : Pin(-1, -1)
+Pin::Pin() : Pin(-1, INVALID_PIN_INDEX)
 {
 	
 }

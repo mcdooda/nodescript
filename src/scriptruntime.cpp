@@ -27,7 +27,7 @@ void ScriptRuntime::execute()
 	for (int nodeCall : m_script->getEntryPoints())
 	{
 		NodeRuntime* nodeRuntime = getNodeCallRuntime(nodeCall);
-		nodeRuntime->execute(-1);
+		nodeRuntime->execute(ENTRY_POINT_PIN_INDEX);
 	}
 }
 

@@ -24,7 +24,7 @@ class ScriptEngine
 		template <class T>
 		void registerNode()
 		{
-			m_nodeFactories[T::getNodeName()] = T::factory;
+			m_nodeFactories[T::nodeName()] = T::factory;
 		}
 		
 		int m_currentNodeTypeId;

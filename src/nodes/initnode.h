@@ -1,7 +1,10 @@
-#ifndef INITNODE_H
-#define INITNODE_H
+#ifndef NODES_INITNODE_H
+#define NODES_INITNODE_H
 
 #include "../node.h"
+
+namespace node
+{
 
 class InitNode : public Node
 {
@@ -10,11 +13,9 @@ class InitNode : public Node
 		
 		enum
 		{
-			IntOutIndex,
 			ImpulseOutIndex
 		};
 		
-		typedef PinInfo<IntOutIndex, int> IntOutPin;
 		typedef PinInfo<ImpulseOutIndex> ImpulseOutPin;
 		
 	public:
@@ -24,4 +25,6 @@ class InitNode : public Node
 		
 }; // TestNode
 
-#endif // INITNODE_H
+} // node
+
+#endif // NODES_INITNODE_H

@@ -1,7 +1,10 @@
-#ifndef TESTNODE_H
-#define TESTNODE_H
+#ifndef NODES_TESTNODE_H
+#define NODES_TESTNODE_H
 
 #include "../node.h"
+
+namespace node
+{
 
 class TestNode : public Node
 {
@@ -11,15 +14,19 @@ class TestNode : public Node
 		enum
 		{
 			IntInIndex,
+			FloatInIndex,
 			ImpulseInIndex,
 			IntOutIndex,
+			FloatOutIndex,
 			ImpulseOutIndex
 		};
 		
 		typedef PinInfo<IntInIndex, int> IntInPin;
+		typedef PinInfo<FloatInIndex, float> FloatInPin;
 		typedef PinInfo<ImpulseInIndex> ImpulseInPin;
 		
 		typedef PinInfo<IntOutIndex, int> IntOutPin;
+		typedef PinInfo<FloatOutIndex, float> FloatOutPin;
 		typedef PinInfo<ImpulseOutIndex> ImpulseOutPin;
 		
 	public:
@@ -27,7 +34,9 @@ class TestNode : public Node
 		void execute(NodeRuntime* runtime, PinIndex inputPinIndex) const override;
 }; // TestNode
 
-#endif // TESTNODE_H
+} // node
+
+#endif // NODES_TESTNODE_H
 
 
 

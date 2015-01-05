@@ -3,6 +3,8 @@
 
 #include "nodes/initnode.h"
 #include "nodes/testnode.h"
+#include "nodes/constantvaluenode.h"
+#include "nodes/math/addnode.h"
 
 ScriptEngine::ScriptEngine()
 {
@@ -37,8 +39,15 @@ Node* ScriptEngine::getNodeInstance(const std::string& nodeName)
 
 void ScriptEngine::registerNodes()
 {
-	registerNode<InitNode>();
-	registerNode<TestNode>();
+	registerNode<node::InitNode>();
+	registerNode<node::TestNode>();
+	registerNode<node::PointerConstantValueNode>();
+	registerNode<node::BoolConstantValueNode>();
+	registerNode<node::IntConstantValueNode>();
+	registerNode<node::LongConstantValueNode>();
+	registerNode<node::FloatConstantValueNode>();
+	registerNode<node::DoubleConstantValueNode>();
+	registerNode<node::math::AddNode>();
 }
 
 
