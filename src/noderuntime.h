@@ -16,7 +16,7 @@ class NodeRuntime
 {
 	friend class Node;
 	public:
-		NodeRuntime(Node* node, int nodeCall);
+		NodeRuntime(const Node* node, int nodeCall);
 		virtual ~NodeRuntime();
 		
 		void execute(PinIndex inputPinIndex);
@@ -88,7 +88,7 @@ class NodeRuntime
 			}
 		}
 		
-		Node* m_node;
+		const Node* m_node;
 		int m_nodeCall;
 		
 		NodeRuntime** m_inputRuntimes;

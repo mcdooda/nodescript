@@ -6,7 +6,7 @@
 #include "scriptruntime.h"
 #include "pinimpulse.h"
 
-NodeRuntime::NodeRuntime(Node* node, int nodeCall) :
+NodeRuntime::NodeRuntime(const Node* node, int nodeCall) :
 	m_node(node),
 	m_nodeCall(nodeCall),
 	m_inputRuntimes(nullptr),

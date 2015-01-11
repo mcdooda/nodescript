@@ -12,7 +12,7 @@ template <class T>
 class ConstantValueNodeRuntime : public FunctionalNodeRuntime
 {
 	public:
-		ConstantValueNodeRuntime(Node* node, int nodeCall) : FunctionalNodeRuntime(node, nodeCall) {}
+		ConstantValueNodeRuntime(const Node* node, int nodeCall) : FunctionalNodeRuntime(node, nodeCall) {}
 		
 		void setValue(const T& value);
 };
@@ -21,6 +21,7 @@ template <class T>
 class ConstantValueNode : public FunctionalNode
 {
 	public:
+		NODE_RUNTIME_TYPE(ConstantValueNodeRuntime<T>);
 		typedef FunctionalNode Super;
 		
 		enum
@@ -45,11 +46,6 @@ class ConstantValueNode : public FunctionalNode
 				case ValueOutPin::Index: return "Value"; break;
 				default: return Super::getPinName(pinIndex); break;
 			}
-		}
-		
-		NodeRuntime* createRuntime(ScriptRuntime* scriptRuntime, int nodeCall) override
-		{
-			return new ConstantValueNodeRuntime<T>(this, nodeCall);
 		}
 };
 
@@ -92,7 +88,7 @@ class DoubleConstantValueNode : public ConstantValueNode<double>
 class StringConstantValueNodeRuntime : public ConstantValueNodeRuntime<std::string*>
 {
 	public:
-		StringConstantValueNodeRuntime(Node* node, int nodeCall) : ConstantValueNodeRuntime(node, nodeCall) {}
+		StringConstantValueNodeRuntime(const Node* node, int nodeCall) : ConstantValueNodeRuntime(node, nodeCall) {}
 		
 		void setValue(const std::string& value)
 		{
@@ -108,11 +104,7 @@ class StringConstantValueNode : public ConstantValueNode<std::string*>
 {
 	public:
 		NODE(StringConstantValueNode, "String Value");
-		
-		NodeRuntime* createRuntime(ScriptRuntime* scriptRuntime, int nodeCall) override
-		{
-			return new StringConstantValueNodeRuntime(this, nodeCall);
-		}
+		NODE_RUNTIME_TYPE(StringConstantValueNodeRuntime);
 };
 
 } // node

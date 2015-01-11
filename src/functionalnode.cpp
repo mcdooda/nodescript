@@ -17,7 +17,7 @@ void FunctionalNode::execute(NodeRuntime* runtime, PinIndex inputPinIndex) const
 	execute(runtime);
 }
 
-NodeRuntime* FunctionalNode::createRuntime(ScriptRuntime* scriptRuntime, int nodeCall)
+NodeRuntime* FunctionalNode::createRuntime(ScriptRuntime* scriptRuntime, int nodeCall) const
 {
 	return new FunctionalNodeRuntime(this, nodeCall);
 }

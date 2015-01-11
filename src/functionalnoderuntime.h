@@ -6,7 +6,7 @@
 class FunctionalNodeRuntime : public NodeRuntime
 {
 	public:
-		FunctionalNodeRuntime(Node* node, int nodeCall);
+		FunctionalNodeRuntime(const Node* node, int nodeCall);
 		~FunctionalNodeRuntime() override;
 };
 

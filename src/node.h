@@ -22,6 +22,9 @@ class ScriptRuntime;
 	static const char* nodeName() { return NodeName; }
 #endif
 
+#define NODE_RUNTIME_TYPE(NodeRuntimeType) \
+	NodeRuntime* createRuntime(ScriptRuntime* scriptRuntime, int nodeCall) const override { return new NodeRuntimeType(this, nodeCall); }
+
 #define NODE(NodeType, NodeName) \
 	NODE_FACTORY(new NodeType()) \
 	NODE_NAME(NodeName)
@@ -44,7 +47,7 @@ class Node
 		
 		virtual void addedToScript(Script* script, int nodeCall) const {}
 		
-		virtual NodeRuntime* createRuntime(ScriptRuntime* scriptRuntime, int nodeCall);
+		virtual NodeRuntime* createRuntime(ScriptRuntime* scriptRuntime, int nodeCall) const;
 		
 		#ifndef NDEBUG
 		bool debugIsInputValuePinIndexValid(PinIndex pinIndex) const;

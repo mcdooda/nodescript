@@ -36,7 +36,7 @@ const char* Node::getPinName(PinIndex pinIndex) const
 	return "<Unknown pin name>";
 }
 
-NodeRuntime* Node::createRuntime(ScriptRuntime* scriptRuntime, int nodeCall)
+NodeRuntime* Node::createRuntime(ScriptRuntime* scriptRuntime, int nodeCall) const
 {
 	return new NodeRuntime(this, nodeCall);
 }
