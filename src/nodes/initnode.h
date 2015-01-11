@@ -10,6 +10,7 @@ class InitNode : public Node
 {
 	public:
 		NODE(InitNode, "Init");
+		typedef Node Super;
 		
 		enum
 		{
@@ -21,6 +22,7 @@ class InitNode : public Node
 	public:
 		InitNode();
 		void execute(NodeRuntime* runtime, PinIndex inputPinIndex) const override;
+		const char* getPinName(PinIndex pinIndex) const override;
 		void addedToScript(Script* script, int nodeCall) const override;
 		
 }; // TestNode

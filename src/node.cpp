@@ -1,4 +1,5 @@
 #include <iostream>
+#include <typeinfo>
 #include "node.h"
 
 Node::Node() :
@@ -24,13 +25,15 @@ Node::~Node()
 #ifndef NDEBUG
 const char* Node::debugGetNodeName() const
 {
+	std::cerr << "Node \"" << typeid(*this).name() << "\" misses a name!" << std::endl;
+	assert(false);
 	return "<Unnamed node>";
 }
 #endif
 
 const char* Node::getPinName(PinIndex pinIndex) const
 {
-	return "Unknown pin name";
+	return "<Unknown pin name>";
 }
 
 NodeRuntime* Node::createRuntime(ScriptRuntime* scriptRuntime, int nodeCall)
@@ -78,7 +81,7 @@ void Node::debugPrintPins() const
 	std::cerr << "Node: " << debugGetNodeName() << std::endl;
 	for (PinIndex pinIndex = 0; pinIndex < m_debugCurrentPinIndex; pinIndex++)
 	{
-		std::cerr << "pin#" << (int)pinIndex << ": " << debugGetPinType(pinIndex) << std::endl;
+		std::cerr << "pin#" << (int)pinIndex << " \"" << getPinName(pinIndex) << "\": " << debugGetPinType(pinIndex) << std::endl;
 	}
 	std::cerr << std::endl;
 }

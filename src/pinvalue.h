@@ -13,12 +13,40 @@ union PinValue
 	void* pointerValue;
 };
 
+template <class T>
+class PinType
+{
+	public:
+		enum { Valid = false };
+};
+
+#ifndef NDEBUG
+#define PIN_TYPE(Type) 				\
+	template <>						\
+	class PinType<Type>				\
+	{								\
+		public:						\
+			static char id;			\
+			enum { Valid = true };	\
+	};								\
+
+#define PIN_TYPE_VALID(Type) PinType<Type>::Valid
+#define PIN_TYPE_ID(Type) &PinType<Type>::id
+#define PIN_TYPE_IMPULSE_ID nullptr
+
+typedef char* PinTypeId;
+
+#include "pintypes.h"
+#endif
+
 // read
 template <class T>
 void readPinValue(const PinValue& pinValue, T& value)
 {
 	static_assert(std::is_pointer<T>::value, "Incompatible pin type!");
-	assert(dynamic_cast<T>(pinValue.pointerValue));
+	#ifndef NDEBUG
+	static_assert(PIN_TYPE_VALID(T), "This pin type is not registered!");
+	#endif
 	value = static_cast<T>(pinValue.pointerValue);
 }
 

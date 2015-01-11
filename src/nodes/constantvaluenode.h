@@ -1,6 +1,7 @@
 #ifndef CONSTANTVALUENODE_H
 #define CONSTANTVALUENODE_H
 
+#include <iostream>
 #include "../functionalnode.h"
 #include "../functionalnoderuntime.h"
 
@@ -20,7 +21,7 @@ template <class T>
 class ConstantValueNode : public FunctionalNode
 {
 	public:
-		NODE_FACTORY(new ConstantValueNode<T>());
+		typedef FunctionalNode Super;
 		
 		enum
 		{
@@ -37,6 +38,15 @@ class ConstantValueNode : public FunctionalNode
 		
 		void execute(NodeRuntime* runtime) const override {}
 		
+		const char* getPinName(PinIndex pinIndex) const override
+		{
+			switch (pinIndex)
+			{
+				case ValueOutPin::Index: return "Value"; break;
+				default: return Super::getPinName(pinIndex); break;
+			}
+		}
+		
 		NodeRuntime* createRuntime(ScriptRuntime* scriptRuntime, int nodeCall) override
 		{
 			return new ConstantValueNodeRuntime<T>(this, nodeCall);
@@ -49,40 +59,60 @@ void ConstantValueNodeRuntime<T>::setValue(const T& value)
 	writePin<typename ConstantValueNode<T>::ValueOutPin>(value);
 }
 
-class PointerConstantValueNode : public ConstantValueNode<void*>
-{
-	public:
-		NODE_NAME("Pointer Value");
-};
-
 class BoolConstantValueNode : public ConstantValueNode<bool>
 {
 	public:
-		NODE_NAME("Bool Value");
+		NODE(BoolConstantValueNode, "Bool Value");
 };
 
 class IntConstantValueNode : public ConstantValueNode<int>
 {
 	public:
-		NODE_NAME("Int Value");
+		NODE(IntConstantValueNode, "Int Value");
 };
 
 class LongConstantValueNode : public ConstantValueNode<long>
 {
 	public:
-		NODE_NAME("Long Value");
+		NODE(LongConstantValueNode, "Long Value");
 };
 
 class FloatConstantValueNode : public ConstantValueNode<float>
 {
 	public:
-		NODE_NAME("Float Value");
+		NODE(FloatConstantValueNode, "Float Value");
 };
 
 class DoubleConstantValueNode : public ConstantValueNode<double>
 {
 	public:
-		NODE_NAME("Double Value");
+		NODE(DoubleConstantValueNode, "Double Value");
+};
+
+class StringConstantValueNodeRuntime : public ConstantValueNodeRuntime<std::string*>
+{
+	public:
+		StringConstantValueNodeRuntime(Node* node, int nodeCall) : ConstantValueNodeRuntime(node, nodeCall) {}
+		
+		void setValue(const std::string& value)
+		{
+			m_value = value;
+			writePin<typename ConstantValueNode<std::string*>::ValueOutPin>(&m_value);
+		}
+		
+	private:
+		std::string m_value;
+};
+
+class StringConstantValueNode : public ConstantValueNode<std::string*>
+{
+	public:
+		NODE(StringConstantValueNode, "String Value");
+		
+		NodeRuntime* createRuntime(ScriptRuntime* scriptRuntime, int nodeCall) override
+		{
+			return new StringConstantValueNodeRuntime(this, nodeCall);
+		}
 };
 
 } // node

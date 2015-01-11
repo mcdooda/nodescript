@@ -31,6 +31,7 @@ Node* ScriptEngine::getNodeInstance(const std::string& nodeName)
 	}
 	else
 	{
+		assert(m_nodeFactories.find(nodeName) != m_nodeFactories.end()); // the node type is not registered
 		node = m_nodeFactories[nodeName]();
 		m_nodes[nodeName] = node;
 	}
@@ -41,12 +42,12 @@ void ScriptEngine::registerNodes()
 {
 	registerNode<node::InitNode>();
 	registerNode<node::TestNode>();
-	registerNode<node::PointerConstantValueNode>();
 	registerNode<node::BoolConstantValueNode>();
 	registerNode<node::IntConstantValueNode>();
 	registerNode<node::LongConstantValueNode>();
 	registerNode<node::FloatConstantValueNode>();
 	registerNode<node::DoubleConstantValueNode>();
+	registerNode<node::StringConstantValueNode>();
 	registerNode<node::math::AddNode>();
 }
 

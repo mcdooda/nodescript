@@ -1,6 +1,8 @@
 #ifndef PIN_H
 #define PIN_H
 
+#include "pinvalue.h"
+
 typedef char PinIndex;
 
 enum

@@ -4,6 +4,7 @@
 #include <map>
 #include <type_traits>
 #include <cassert>
+#include <iostream>
 #include "pin.h"
 #include "pinvalue.h"
 #include "pinimpulse.h"
@@ -29,6 +30,7 @@ class NodeRuntime
 		bool debugIsInputImpulsePinIndexValid(PinIndex pinIndex) const;
 		bool debugIsOutputValuePinIndexValid(PinIndex pinIndex) const;
 		bool debugIsOutputImpulsePinIndexValid(PinIndex pinIndex) const;
+		const char* debugGetPinType(PinIndex pinIndex) const;
 		#endif
 		
 	protected:
@@ -61,7 +63,13 @@ class NodeRuntime
 		template <class T>
 		void writePin(typename T::ValueType value)
 		{
-			assert(debugIsOutputValuePinIndexValid(T::Index));
+			#ifndef NDEBUG
+			if (!debugIsOutputValuePinIndexValid(T::Index))
+			{
+				std::cerr << "Trying to write to a pin of type \"" << debugGetPinType(T::Index) << "\"" << std::endl;
+				assert(false);
+			}
+			#endif
 			int index = getOutputValueIndexFromPinIndex(T::Index);
 			writePinValue<typename T::ValueType>(m_outputValues[index], value);
 		}

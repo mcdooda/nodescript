@@ -15,6 +15,9 @@ Script::~Script()
 
 int Script::addNode(Node* node)
 {
+	#ifndef NDEBUG
+	node->debugGetNodeName();
+	#endif
 	m_nodes.push_back(node);
 	int nodeCall = m_nodes.size() - 1;
 	m_outputPins[nodeCall] = std::map<PinIndex, Pin>();

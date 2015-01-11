@@ -58,6 +58,11 @@ bool NodeRuntime::debugIsOutputImpulsePinIndexValid(PinIndex pinIndex) const
 {
 	return m_node->debugIsOutputImpulsePinIndexValid(pinIndex);
 }
+
+const char* NodeRuntime::debugGetPinType(PinIndex pinIndex) const
+{
+	return m_node->debugGetPinType(pinIndex);
+}
 #endif
 
 void NodeRuntime::createInputValues()

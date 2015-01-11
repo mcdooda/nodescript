@@ -11,7 +11,14 @@ class ScriptRuntime
 		~ScriptRuntime();
 		
 		void execute();
+		
 		NodeRuntime* getNodeCallRuntime(int nodeCall) const;
+		
+		template <class T>
+		T* getNodeCallRuntime(int nodeCall) const
+		{
+			return static_cast<T*>(getNodeCallRuntime(nodeCall));
+		}
 		
 		inline Script* getScript() const { return m_script; }
 		
