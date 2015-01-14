@@ -21,6 +21,7 @@ class ScriptRuntime
 		}
 		
 		inline Script* getScript() const { return m_script; }
+		inline int* getCurrentExecutionIndex() { return &m_currentExecutionIndex; }
 		
 	private:
 		void createNodeRuntimes();
@@ -28,6 +29,7 @@ class ScriptRuntime
 		
 		Script* m_script;
 		NodeRuntime** m_nodeRuntimes;
+		int m_currentExecutionIndex;
 };
 
 #endif // SCRIPTRUNTIME_H

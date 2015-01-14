@@ -79,7 +79,7 @@ const char* Node::debugGetPinType(PinIndex pinIndex) const
 void Node::debugPrintPins() const
 {
 	std::cerr << "Node: " << debugGetNodeName() << std::endl;
-	for (PinIndex pinIndex = 0; pinIndex < m_debugCurrentPinIndex; pinIndex++)
+	for (PinIndex pinIndex = 0; pinIndex < m_debugCurrentPinIndex; ++pinIndex)
 	{
 		std::cerr << "pin#" << (int)pinIndex << " \"" << getPinName(pinIndex) << "\": " << debugGetPinType(pinIndex) << std::endl;
 	}

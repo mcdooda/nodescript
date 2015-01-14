@@ -19,7 +19,7 @@ class NodeRuntime
 		NodeRuntime(const Node* node, int nodeCall);
 		virtual ~NodeRuntime();
 		
-		void execute(PinIndex inputPinIndex);
+		virtual void execute(PinIndex inputPinIndex);
 		
 		void optimizeLinks(ScriptRuntime* scriptRuntime);
 		
@@ -88,6 +88,13 @@ class NodeRuntime
 			}
 		}
 		
+		template <class T>
+		void delayedImpulse()
+		{
+			++(*m_currentExecutionIndex);
+			impulse<T>();
+		}
+		
 		const Node* m_node;
 		int m_nodeCall;
 		
@@ -95,6 +102,8 @@ class NodeRuntime
 		PinValue** m_inputValues;
 		PinValue* m_outputValues;
 		PinImpulse* m_outputImpulses;
+		
+		int* m_currentExecutionIndex;
 }; // NodeRuntime
 
 #endif // NODERUNTIME_H

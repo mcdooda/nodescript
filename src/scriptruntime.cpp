@@ -6,7 +6,8 @@
 #include "noderuntime.h"
 
 ScriptRuntime::ScriptRuntime(Script* script) :
-	m_script(script)
+	m_script(script),
+	m_currentExecutionIndex(-1)
 {
 	createNodeRuntimes();
 	optimizeNodeRuntimeLinks();
@@ -24,6 +25,7 @@ ScriptRuntime::~ScriptRuntime()
 
 void ScriptRuntime::execute()
 {
+	m_currentExecutionIndex = 0;
 	for (int nodeCall : m_script->getEntryPoints())
 	{
 		NodeRuntime* nodeRuntime = getNodeCallRuntime(nodeCall);
@@ -46,14 +48,14 @@ void ScriptRuntime::createNodeRuntimes()
 	{
 		NodeRuntime* nodeRuntime = node->createRuntime(this, nodeCall);
 		m_nodeRuntimes[nodeCall] = nodeRuntime;
-		nodeCall++;
+		++nodeCall;
 	}
 }
 
 void ScriptRuntime::optimizeNodeRuntimeLinks()
 {
 	int numNodes = m_script->getNumNodes();
-	for (int nodeCall = 0; nodeCall < numNodes; nodeCall++)
+	for (int nodeCall = 0; nodeCall < numNodes; ++nodeCall)
 	{
 		m_nodeRuntimes[nodeCall]->optimizeLinks(this);
 	}

@@ -58,7 +58,7 @@ int main(int argc, char* argv[])
 		script->addLink(testNodeCall1, TestNode::StringOutPin::Index, testNodeCall2, TestNode::StringInPin::Index);
 		script->addLink(testNodeCall1, TestNode::ImpulseOutPin::Index, testNodeCall2, TestNode::ImpulseInPin::Index);
 		
-		for (int i = 0; i < 10; i++)
+		for (int i = 0; i < 10; ++i)
 		{
 			ScriptRuntime* scriptRuntime = script->createRuntime();
 			

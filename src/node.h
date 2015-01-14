@@ -64,7 +64,7 @@ class Node
 		{
 			#ifndef NDEBUG
 			assert(m_debugCurrentPinIndex == T::Index);
-			m_debugCurrentPinIndex++;
+			++m_debugCurrentPinIndex;
 			static_assert(PIN_TYPE_VALID(typename T::ValueType), "This pin type is not registered!");
 			m_debugPinTypeIds.push_back(PIN_TYPE_ID(typename T::ValueType));
 			assert(m_firstInImpulsePinIndex == INVALID_PIN_INDEX_MIN_1);
@@ -85,7 +85,7 @@ class Node
 			static_assert(std::is_same<typename T::ValueType, void>::value, "Impulse pins cannot have a type");
 			assert(!isFunctional());
 			assert(m_debugCurrentPinIndex == T::Index);
-			m_debugCurrentPinIndex++;
+			++m_debugCurrentPinIndex;
 			m_debugPinTypeIds.push_back(PIN_TYPE_IMPULSE_ID);
 			assert(m_firstOutValuePinIndex == INVALID_PIN_INDEX_MIN_1);
 			assert(m_firstOutImpulsePinIndex == INVALID_PIN_INDEX_MIN_1);
@@ -102,7 +102,7 @@ class Node
 		{
 			#ifndef NDEBUG
 			assert(m_debugCurrentPinIndex == T::Index);
-			m_debugCurrentPinIndex++;
+			++m_debugCurrentPinIndex;
 			static_assert(PIN_TYPE_VALID(typename T::ValueType), "This pin type is not registered!");
 			m_debugPinTypeIds.push_back(PIN_TYPE_ID(typename T::ValueType));
 			assert(m_firstOutImpulsePinIndex == INVALID_PIN_INDEX_MIN_1);
@@ -120,7 +120,7 @@ class Node
 			#ifndef NDEBUG
 			static_assert(std::is_same<typename T::ValueType, void>::value, "Impulse pins cannot have a type");
 			assert(m_debugCurrentPinIndex == T::Index);
-			m_debugCurrentPinIndex++;
+			++m_debugCurrentPinIndex;
 			m_debugPinTypeIds.push_back(PIN_TYPE_IMPULSE_ID);
 			#endif
 			if (m_firstOutImpulsePinIndex == INVALID_PIN_INDEX_MIN_1)

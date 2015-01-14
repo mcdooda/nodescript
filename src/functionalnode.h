@@ -7,6 +7,7 @@ class ScriptRuntime;
 
 class FunctionalNode : public Node
 {
+	typedef Node Super;
 	public:
 		FunctionalNode();
 		~FunctionalNode() override;

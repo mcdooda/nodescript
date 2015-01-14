@@ -36,6 +36,7 @@ void NodeRuntime::optimizeLinks(ScriptRuntime* scriptRuntime)
 {
 	optimizeInputValueLinks(scriptRuntime);
 	optimizeOutputImpulseLinks(scriptRuntime);
+	m_currentExecutionIndex = scriptRuntime->getCurrentExecutionIndex();
 }
 
 #ifndef NDEBUG
@@ -116,7 +117,7 @@ void NodeRuntime::optimizeInputValueLinks(ScriptRuntime* scriptRuntime)
 {
 	Script* script = scriptRuntime->getScript();
 	Pin outputPin;
-	for (int pinIndex = m_node->m_firstInValuePinIndex; pinIndex <= m_node->m_lastInValuePinIndex; pinIndex++)
+	for (int pinIndex = m_node->m_firstInValuePinIndex; pinIndex <= m_node->m_lastInValuePinIndex; ++pinIndex)
 	{
 		script->getOutputPin(m_nodeCall, pinIndex, outputPin);
 		assert(script->debugIsNodeCallValid(outputPin.getNodeCall())); // The input pin is not connected to an other pin!
@@ -158,7 +159,7 @@ void NodeRuntime::optimizeOutputImpulseLinks(ScriptRuntime* scriptRuntime)
 {
 	Script* script = scriptRuntime->getScript();
 	Pin inputPin;
-	for (int pinIndex = m_node->m_firstOutImpulsePinIndex; pinIndex <= m_node->m_lastOutImpulsePinIndex; pinIndex++)
+	for (int pinIndex = m_node->m_firstOutImpulsePinIndex; pinIndex <= m_node->m_lastOutImpulsePinIndex; ++pinIndex)
 	{
 		script->getInputPin(m_nodeCall, pinIndex, inputPin);
 		if (inputPin.isConnected())

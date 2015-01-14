@@ -5,7 +5,7 @@
 
 typedef char PinIndex;
 
-enum
+enum MagicPinIndex : char
 {
 	INVALID_PIN_INDEX_MIN_1           = -127,
 	INVALID_PIN_INDEX_MIN_2           = -128,
