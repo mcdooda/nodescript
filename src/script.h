@@ -27,7 +27,7 @@ class Script
 		int getNumNodes() const;
 		inline const std::vector<Node*>& getNodes() const { return m_nodes; }
 		
-		void getInputPin(NodeCall nodeCall, PinIndex outputPinIndex, Pin& pin);
+		void getInputPins(NodeCall nodeCall, PinIndex outputPinIndex, std::vector<Pin>& pins);
 		void getOutputPin(NodeCall nodeCall, PinIndex inputPinIndex, Pin& pin);
 		
 		#ifndef NDEBUG
@@ -38,7 +38,7 @@ class Script
 		std::vector<Node*> m_nodes;
 		std::vector<NodeCall> m_entryPoints;
 		std::map<NodeCall, std::map<PinIndex, Pin>> m_inputPins;
-		std::map<NodeCall, std::map<PinIndex, Pin>> m_outputPins;
+		std::map<NodeCall, std::map<PinIndex, std::vector<Pin>>> m_outputPins;
 };
 
 #endif // SCRIPT_H

@@ -24,8 +24,7 @@ int main(int argc, char* argv[])
 		Node* mathAddNode = engine.getNodeInstance("Add");
 		
 		NodeCall initCall = script->addNode(initNode);
-		NodeCall intValueCall1 = script->addNode(intValueNode);
-		NodeCall intValueCall2 = script->addNode(intValueNode);
+		NodeCall intValueCall = script->addNode(intValueNode);
 		NodeCall floatValueCall = script->addNode(floatValueNode);
 		NodeCall stringValueCall = script->addNode(stringValueNode);
 		
@@ -43,8 +42,8 @@ int main(int argc, char* argv[])
 		*/
 		
 		NodeCall mathAddCall = script->addNode(mathAddNode);
-		script->addLink(intValueCall1, IntConstantValueNode::ValueOutPin::Index, mathAddCall, math::AddNode::Int1InPin::Index);
-		script->addLink(intValueCall2, IntConstantValueNode::ValueOutPin::Index, mathAddCall, math::AddNode::Int2InPin::Index);
+		script->addLink(intValueCall, IntConstantValueNode::ValueOutPin::Index, mathAddCall, math::AddNode::Int1InPin::Index);
+		script->addLink(intValueCall, IntConstantValueNode::ValueOutPin::Index, mathAddCall, math::AddNode::Int2InPin::Index);
 		
 		NodeCall testNodeCall1 = script->addNode(testNode);
 		script->addLink(initCall, InitNode::ImpulseOutPin::Index, testNodeCall1, TestNode::ImpulseInPin::Index);
@@ -62,11 +61,8 @@ int main(int argc, char* argv[])
 		{
 			ScriptRuntime* scriptRuntime = script->createRuntime();
 			
-			ConstantValueNodeRuntime<int>* intConstantValueNodeRuntime1 = scriptRuntime->getNodeCallRuntime<ConstantValueNodeRuntime<int>>(intValueCall1);
-			intConstantValueNodeRuntime1->setValue(i);
-			
-			ConstantValueNodeRuntime<int>* intConstantValueNodeRuntime2 = scriptRuntime->getNodeCallRuntime<ConstantValueNodeRuntime<int>>(intValueCall2);
-			intConstantValueNodeRuntime2->setValue(1);
+			ConstantValueNodeRuntime<int>* intConstantValueNodeRuntime = scriptRuntime->getNodeCallRuntime<ConstantValueNodeRuntime<int>>(intValueCall);
+			intConstantValueNodeRuntime->setValue(i);
 			
 			ConstantValueNodeRuntime<float>* floatConstantValueNodeRuntime = scriptRuntime->getNodeCallRuntime<ConstantValueNodeRuntime<float>>(floatValueCall);
 			floatConstantValueNodeRuntime->setValue(static_cast<float>(i) / 2);

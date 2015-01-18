@@ -158,17 +158,20 @@ void NodeRuntime::optimizeInputValueLinks(ScriptRuntime* scriptRuntime)
 void NodeRuntime::optimizeOutputImpulseLinks(ScriptRuntime* scriptRuntime)
 {
 	Script* script = scriptRuntime->getScript();
-	Pin inputPin;
+	std::vector<Pin> inputPins;
 	for (PinIndex pinIndex = m_node->m_firstOutImpulsePinIndex; pinIndex <= m_node->m_lastOutImpulsePinIndex; ++pinIndex)
 	{
-		script->getInputPin(m_nodeCall, pinIndex, inputPin);
-		if (inputPin.isConnected())
+		script->getInputPins(m_nodeCall, pinIndex, inputPins);
+		for (const Pin& inputPin : inputPins)
 		{
-			assert(script->debugIsNodeCallValid(inputPin.getNodeCall())); // The output node is invalid
-			NodeRuntime* outputRuntime = scriptRuntime->getNodeCallRuntime(inputPin.getNodeCall());
-			assert(outputRuntime->debugIsInputImpulsePinIndexValid(inputPin.getIndex())); // The input pin is invalid
-			int outIndex = getOutputImpulseIndexFromPinIndex(pinIndex);
-			m_outputImpulses[outIndex] = PinImpulse(outputRuntime, inputPin.getIndex());
+			if (inputPin.isConnected())
+			{
+				assert(script->debugIsNodeCallValid(inputPin.getNodeCall())); // The output node is invalid
+				NodeRuntime* outputRuntime = scriptRuntime->getNodeCallRuntime(inputPin.getNodeCall());
+				assert(outputRuntime->debugIsInputImpulsePinIndexValid(inputPin.getIndex())); // The input pin is invalid
+				int outIndex = getOutputImpulseIndexFromPinIndex(pinIndex);
+				m_outputImpulses[outIndex] = PinImpulse(outputRuntime, inputPin.getIndex());
+			}
 		}
 	}
 }
