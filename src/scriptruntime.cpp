@@ -26,14 +26,14 @@ ScriptRuntime::~ScriptRuntime()
 void ScriptRuntime::execute()
 {
 	m_currentExecutionIndex = 0;
-	for (int nodeCall : m_script->getEntryPoints())
+	for (NodeCall nodeCall : m_script->getEntryPoints())
 	{
 		NodeRuntime* nodeRuntime = getNodeCallRuntime(nodeCall);
 		nodeRuntime->execute(ENTRY_POINT_PIN_INDEX);
 	}
 }
 
-NodeRuntime* ScriptRuntime::getNodeCallRuntime(int nodeCall) const
+NodeRuntime* ScriptRuntime::getNodeCallRuntime(NodeCall nodeCall) const
 {
 	assert(m_script->debugIsNodeCallValid(nodeCall));
 	return m_nodeRuntimes[nodeCall];
@@ -43,7 +43,7 @@ void ScriptRuntime::createNodeRuntimes()
 {
 	int numNodes = m_script->getNumNodes();
 	m_nodeRuntimes = new NodeRuntime*[numNodes];
-	int nodeCall = 0;
+	NodeCall nodeCall = 0;
 	for (Node* node : m_script->getNodes())
 	{
 		NodeRuntime* nodeRuntime = node->createRuntime(this, nodeCall);
@@ -55,7 +55,7 @@ void ScriptRuntime::createNodeRuntimes()
 void ScriptRuntime::optimizeNodeRuntimeLinks()
 {
 	int numNodes = m_script->getNumNodes();
-	for (int nodeCall = 0; nodeCall < numNodes; ++nodeCall)
+	for (NodeCall nodeCall = 0; nodeCall < numNodes; ++nodeCall)
 	{
 		m_nodeRuntimes[nodeCall]->optimizeLinks(this);
 	}

@@ -2,6 +2,7 @@
 #define PIN_H
 
 #include "pinvalue.h"
+#include "nodecall.h"
 
 typedef char PinIndex;
 
@@ -25,19 +26,19 @@ class PinInfo
 class Pin
 {
 	public:
-		Pin(int nodeCall, PinIndex index);
+		Pin(NodeCall nodeCall, PinIndex index);
 		Pin();
 		Pin(const Pin& pin);
 		void operator=(const Pin& pin);
 		
-		inline int getNodeCall() const { return m_nodeCall; }
+		inline NodeCall getNodeCall() const { return m_nodeCall; }
 		inline PinIndex getIndex() const { return m_index; }
 		
 		// returns whether the pin may be connected, can return true with invalid pins
-		inline bool isConnected() const { return m_nodeCall != -1 || m_index != INVALID_PIN_INDEX; }
+		inline bool isConnected() const { return m_nodeCall != INVALID_NODE_CALL || m_index != INVALID_PIN_INDEX; }
 		
 	private:
-		int m_nodeCall;
+		NodeCall m_nodeCall;
 		PinIndex m_index;
 };
 

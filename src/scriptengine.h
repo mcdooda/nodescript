@@ -27,7 +27,6 @@ class ScriptEngine
 			m_nodeFactories[T::nodeName()] = T::factory;
 		}
 		
-		int m_currentNodeTypeId;
 		std::map<std::string, Node*> m_nodes;
 		std::map<std::string, NodeFactory> m_nodeFactories;
 }; // ScriptEngine

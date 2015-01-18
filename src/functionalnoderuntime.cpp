@@ -2,7 +2,7 @@
 #include "functionalnoderuntime.h"
 #include "node.h"
 
-FunctionalNodeRuntime::FunctionalNodeRuntime(const Node* node, int nodeCall) : NodeRuntime(node, nodeCall),
+FunctionalNodeRuntime::FunctionalNodeRuntime(const Node* node, NodeCall nodeCall) : NodeRuntime(node, nodeCall),
 	m_lastExecutionIndex(-1)
 {
 	

@@ -16,7 +16,7 @@ class FunctionalNode : public Node
 		
 		void execute(NodeRuntime* runtime, PinIndex inputPinIndex) const override;
 		virtual void execute(NodeRuntime* runtime) const = 0;
-		NodeRuntime* createRuntime(ScriptRuntime* scriptRuntime, int nodeCall) const override;
+		NodeRuntime* createRuntime(ScriptRuntime* scriptRuntime, NodeCall nodeCall) const override;
 };
 
 #endif // FUNCTIONALNODE_H

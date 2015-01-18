@@ -1,13 +1,13 @@
 #include "pin.h"
 
-Pin::Pin(int nodeCall, PinIndex index) :
+Pin::Pin(NodeCall nodeCall, PinIndex index) :
 	m_nodeCall(nodeCall),
 	m_index(index)
 {
 	
 }
 
-Pin::Pin() : Pin(-1, INVALID_PIN_INDEX)
+Pin::Pin() : Pin(INVALID_NODE_CALL, INVALID_PIN_INDEX)
 {
 	
 }

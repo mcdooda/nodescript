@@ -6,7 +6,7 @@
 #include "scriptruntime.h"
 #include "pinimpulse.h"
 
-NodeRuntime::NodeRuntime(const Node* node, int nodeCall) :
+NodeRuntime::NodeRuntime(const Node* node, NodeCall nodeCall) :
 	m_node(node),
 	m_nodeCall(nodeCall),
 	m_inputRuntimes(nullptr),
@@ -117,7 +117,7 @@ void NodeRuntime::optimizeInputValueLinks(ScriptRuntime* scriptRuntime)
 {
 	Script* script = scriptRuntime->getScript();
 	Pin outputPin;
-	for (int pinIndex = m_node->m_firstInValuePinIndex; pinIndex <= m_node->m_lastInValuePinIndex; ++pinIndex)
+	for (PinIndex pinIndex = m_node->m_firstInValuePinIndex; pinIndex <= m_node->m_lastInValuePinIndex; ++pinIndex)
 	{
 		script->getOutputPin(m_nodeCall, pinIndex, outputPin);
 		assert(script->debugIsNodeCallValid(outputPin.getNodeCall())); // The input pin is not connected to an other pin!
@@ -131,10 +131,10 @@ void NodeRuntime::optimizeInputValueLinks(ScriptRuntime* scriptRuntime)
 		if (!inputRuntime->debugIsOutputValuePinIndexValid(outputPin.getIndex()))
 		{
 			std::cerr << m_node->debugGetNodeName()
-			          << " pin#" << (int)pinIndex
+			          << " pin#" << static_cast<int>(pinIndex)
 			          << " (" << m_node->debugGetPinType(pinIndex) << ")"
 			          << " and " << inputRuntime->m_node->debugGetNodeName()
-			          << " pin#" << (int)outputPin.getIndex()
+			          << " pin#" << static_cast<int>(outputPin.getIndex())
 			          << " (" << inputRuntime->m_node->debugGetPinType(pinIndex) << ")"
 			          << " are not compatible pins!" << std::endl;
 			
@@ -159,7 +159,7 @@ void NodeRuntime::optimizeOutputImpulseLinks(ScriptRuntime* scriptRuntime)
 {
 	Script* script = scriptRuntime->getScript();
 	Pin inputPin;
-	for (int pinIndex = m_node->m_firstOutImpulsePinIndex; pinIndex <= m_node->m_lastOutImpulsePinIndex; ++pinIndex)
+	for (PinIndex pinIndex = m_node->m_firstOutImpulsePinIndex; pinIndex <= m_node->m_lastOutImpulsePinIndex; ++pinIndex)
 	{
 		script->getInputPin(m_nodeCall, pinIndex, inputPin);
 		if (inputPin.isConnected())
@@ -171,11 +171,6 @@ void NodeRuntime::optimizeOutputImpulseLinks(ScriptRuntime* scriptRuntime)
 			m_outputImpulses[outIndex] = PinImpulse(outputRuntime, inputPin.getIndex());
 		}
 	}
-}
-
-void NodeRuntime::prepareInputRuntimeReading(PinIndex pinIndex) const
-{
-	
 }
 
 

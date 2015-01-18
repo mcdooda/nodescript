@@ -4,6 +4,7 @@
 #include <vector>
 #include <map>
 #include "pin.h"
+#include "nodecall.h"
 
 class ScriptRuntime;
 class Node;
@@ -14,30 +15,30 @@ class Script
 		Script();
 		~Script();
 		
-		int addNode(Node* node);
-		void addLink(int nodeCall1, PinIndex outputPinIndex, int nodeCall2, PinIndex inputPinIndex);
+		NodeCall addNode(Node* node);
+		void addLink(NodeCall nodeCall1, PinIndex outputPinIndex, NodeCall nodeCall2, PinIndex inputPinIndex);
 		
 		ScriptRuntime* createRuntime();
 		
-		void addEntryPoint(int nodeCall);
-		inline const std::vector<int>& getEntryPoints() const { return m_entryPoints; }
+		void addEntryPoint(NodeCall nodeCall);
+		inline const std::vector<NodeCall>& getEntryPoints() const { return m_entryPoints; }
 		
-		Node* getNode(int nodeCall) const;
+		Node* getNode(NodeCall nodeCall) const;
 		int getNumNodes() const;
 		inline const std::vector<Node*>& getNodes() const { return m_nodes; }
 		
-		void getInputPin(int nodeCall, PinIndex outputPinIndex, Pin& pin);
-		void getOutputPin(int nodeCall, PinIndex inputPinIndex, Pin& pin);
+		void getInputPin(NodeCall nodeCall, PinIndex outputPinIndex, Pin& pin);
+		void getOutputPin(NodeCall nodeCall, PinIndex inputPinIndex, Pin& pin);
 		
 		#ifndef NDEBUG
-		bool debugIsNodeCallValid(int nodeCall) const;
+		bool debugIsNodeCallValid(NodeCall nodeCall) const;
 		#endif
 		
 	private:
 		std::vector<Node*> m_nodes;
-		std::vector<int> m_entryPoints;
-		std::map<int, std::map<PinIndex, Pin>> m_inputPins;
-		std::map<int, std::map<PinIndex, Pin>> m_outputPins;
+		std::vector<NodeCall> m_entryPoints;
+		std::map<NodeCall, std::map<PinIndex, Pin>> m_inputPins;
+		std::map<NodeCall, std::map<PinIndex, Pin>> m_outputPins;
 };
 
 #endif // SCRIPT_H

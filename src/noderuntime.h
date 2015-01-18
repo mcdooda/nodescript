@@ -16,14 +16,14 @@ class NodeRuntime
 {
 	friend class Node;
 	public:
-		NodeRuntime(const Node* node, int nodeCall);
+		NodeRuntime(const Node* node, NodeCall nodeCall);
 		virtual ~NodeRuntime();
 		
 		virtual void execute(PinIndex inputPinIndex);
 		
 		void optimizeLinks(ScriptRuntime* scriptRuntime);
 		
-		inline int getNodeCall() const { return m_nodeCall; }
+		inline NodeCall getNodeCall() const { return m_nodeCall; }
 		
 		#ifndef NDEBUG
 		bool debugIsInputValuePinIndexValid(PinIndex pinIndex) const;
@@ -44,8 +44,6 @@ class NodeRuntime
 		
 		void optimizeInputValueLinks(ScriptRuntime* scriptRuntime);
 		void optimizeOutputImpulseLinks(ScriptRuntime* scriptRuntime);
-		
-		void prepareInputRuntimeReading(PinIndex pinIndex) const;
 		
 		template <class T>
 		void readPin(typename T::ValueType& value)
@@ -96,7 +94,7 @@ class NodeRuntime
 		}
 		
 		const Node* m_node;
-		int m_nodeCall;
+		NodeCall m_nodeCall;
 		
 		NodeRuntime** m_inputRuntimes;
 		PinValue** m_inputValues;

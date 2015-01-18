@@ -13,20 +13,20 @@ Script::~Script()
 	
 }
 
-int Script::addNode(Node* node)
+NodeCall Script::addNode(Node* node)
 {
 	#ifndef NDEBUG
 	node->debugGetNodeName();
 	#endif
 	m_nodes.push_back(node);
-	int nodeCall = m_nodes.size() - 1;
+	NodeCall nodeCall = m_nodes.size() - 1;
 	m_outputPins[nodeCall] = std::map<PinIndex, Pin>();
 	m_inputPins[nodeCall] = std::map<PinIndex, Pin>();
 	node->addedToScript(this, nodeCall);
 	return nodeCall;
 }
 
-void Script::addLink(int nodeCall1, PinIndex outputPinIndex, int nodeCall2, PinIndex inputPinIndex)
+void Script::addLink(NodeCall nodeCall1, PinIndex outputPinIndex, NodeCall nodeCall2, PinIndex inputPinIndex)
 {
 	assert(debugIsNodeCallValid(nodeCall1));
 	assert(outputPinIndex >= 0);
@@ -41,12 +41,12 @@ ScriptRuntime* Script::createRuntime()
 	return new ScriptRuntime(this);
 }
 
-void Script::addEntryPoint(int nodeCall)
+void Script::addEntryPoint(NodeCall nodeCall)
 {
 	m_entryPoints.push_back(nodeCall);
 }
 
-Node* Script::getNode(int nodeCall) const
+Node* Script::getNode(NodeCall nodeCall) const
 {
 	assert(debugIsNodeCallValid(nodeCall));
 	return m_nodes[nodeCall];
@@ -57,18 +57,18 @@ int Script::getNumNodes() const
 	return m_nodes.size();
 }
 
-void Script::getInputPin(int nodeCall, PinIndex outputPinIndex, Pin& pin)
+void Script::getInputPin(NodeCall nodeCall, PinIndex outputPinIndex, Pin& pin)
 {
 	pin = m_outputPins[nodeCall][outputPinIndex];
 }
 
-void Script::getOutputPin(int nodeCall, PinIndex inputPinIndex, Pin& pin)
+void Script::getOutputPin(NodeCall nodeCall, PinIndex inputPinIndex, Pin& pin)
 {
 	pin = m_inputPins[nodeCall][inputPinIndex];
 }
 
 #ifndef NDEBUG
-bool Script::debugIsNodeCallValid(int nodeCall) const
+bool Script::debugIsNodeCallValid(NodeCall nodeCall) const
 {
 	return nodeCall >= 0 && nodeCall < static_cast<int>(m_nodes.size());
 }

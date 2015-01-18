@@ -1,6 +1,8 @@
 #ifndef SCRIPTRUNTIME_H
 #define SCRIPTRUNTIME_H
 
+#include "nodecall.h"
+
 class Script;
 class NodeRuntime;
 
@@ -12,10 +14,10 @@ class ScriptRuntime
 		
 		void execute();
 		
-		NodeRuntime* getNodeCallRuntime(int nodeCall) const;
+		NodeRuntime* getNodeCallRuntime(NodeCall nodeCall) const;
 		
 		template <class T>
-		T* getNodeCallRuntime(int nodeCall) const
+		T* getNodeCallRuntime(NodeCall nodeCall) const
 		{
 			return static_cast<T*>(getNodeCallRuntime(nodeCall));
 		}
