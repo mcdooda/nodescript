@@ -12,7 +12,7 @@ template <class T>
 class ConstantValueNodeRuntime : public FunctionalNodeRuntime
 {
 	public:
-		ConstantValueNodeRuntime(const Node* node, int nodeCall) : FunctionalNodeRuntime(node, nodeCall) {}
+		ConstantValueNodeRuntime(const Node* node, NodeCall nodeCall) : FunctionalNodeRuntime(node, nodeCall) {}
 		
 		void setValue(const T& value);
 };
@@ -88,7 +88,7 @@ class DoubleConstantValueNode : public ConstantValueNode<double>
 class StringConstantValueNodeRuntime : public ConstantValueNodeRuntime<std::string*>
 {
 	public:
-		StringConstantValueNodeRuntime(const Node* node, int nodeCall) : ConstantValueNodeRuntime(node, nodeCall) {}
+		StringConstantValueNodeRuntime(const Node* node, NodeCall nodeCall) : ConstantValueNodeRuntime(node, nodeCall) {}
 		
 		void setValue(const std::string& value)
 		{

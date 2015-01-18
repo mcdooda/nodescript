@@ -24,7 +24,7 @@ const char* InitNode::getPinName(PinIndex pinIndex) const
 	}
 }
 
-void InitNode::addedToScript(Script* script, int nodeCall) const
+void InitNode::addedToScript(Script* script, NodeCall nodeCall) const
 {
 	script->addEntryPoint(nodeCall);
 }

@@ -2,6 +2,7 @@
 #define NODES_INITNODE_H
 
 #include "../node.h"
+#include "../nodecall.h"
 
 namespace node
 {
@@ -23,7 +24,7 @@ class InitNode : public Node
 		InitNode();
 		void execute(NodeRuntime* runtime, PinIndex inputPinIndex) const override;
 		const char* getPinName(PinIndex pinIndex) const override;
-		void addedToScript(Script* script, int nodeCall) const override;
+		void addedToScript(Script* script, NodeCall nodeCall) const override;
 		
 }; // TestNode
 
