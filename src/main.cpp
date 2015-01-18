@@ -23,11 +23,11 @@ int main(int argc, char* argv[])
 		Node* stringValueNode = engine.getNodeInstance("String Value");
 		Node* mathAddNode = engine.getNodeInstance("Add");
 		
-		int initCall = script->addNode(initNode);
-		int intValueCall1 = script->addNode(intValueNode);
-		int intValueCall2 = script->addNode(intValueNode);
-		int floatValueCall = script->addNode(floatValueNode);
-		int stringValueCall = script->addNode(stringValueNode);
+		NodeCall initCall = script->addNode(initNode);
+		NodeCall intValueCall1 = script->addNode(intValueNode);
+		NodeCall intValueCall2 = script->addNode(intValueNode);
+		NodeCall floatValueCall = script->addNode(floatValueNode);
+		NodeCall stringValueCall = script->addNode(stringValueNode);
 		
 		/*
 		   init +> ==============+
@@ -42,17 +42,17 @@ int main(int argc, char* argv[])
 		string* +> ---------------+
 		*/
 		
-		int mathAddCall = script->addNode(mathAddNode);
+		NodeCall mathAddCall = script->addNode(mathAddNode);
 		script->addLink(intValueCall1, IntConstantValueNode::ValueOutPin::Index, mathAddCall, math::AddNode::Int1InPin::Index);
 		script->addLink(intValueCall2, IntConstantValueNode::ValueOutPin::Index, mathAddCall, math::AddNode::Int2InPin::Index);
 		
-		int testNodeCall1 = script->addNode(testNode);
+		NodeCall testNodeCall1 = script->addNode(testNode);
 		script->addLink(initCall, InitNode::ImpulseOutPin::Index, testNodeCall1, TestNode::ImpulseInPin::Index);
 		script->addLink(mathAddCall, math::AddNode::IntOutPin::Index, testNodeCall1, TestNode::IntInPin::Index);
 		script->addLink(floatValueCall, FloatConstantValueNode::ValueOutPin::Index, testNodeCall1, TestNode::FloatInPin::Index);
 		script->addLink(stringValueCall, StringConstantValueNode::ValueOutPin::Index, testNodeCall1, TestNode::StringInPin::Index);
 		
-		int testNodeCall2 = script->addNode(testNode);
+		NodeCall testNodeCall2 = script->addNode(testNode);
 		script->addLink(testNodeCall1, TestNode::IntOutPin::Index, testNodeCall2, TestNode::IntInPin::Index);
 		script->addLink(testNodeCall1, TestNode::FloatOutPin::Index, testNodeCall2, TestNode::FloatInPin::Index);
 		script->addLink(testNodeCall1, TestNode::StringOutPin::Index, testNodeCall2, TestNode::StringInPin::Index);
