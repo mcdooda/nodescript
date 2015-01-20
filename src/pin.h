@@ -1,15 +1,16 @@
 #ifndef PIN_H
 #define PIN_H
 
+#include <cstdint>
 #include "pinvalue.h"
 #include "nodecall.h"
 
-typedef char PinIndex;
+typedef int8_t PinIndex;
 
-enum MagicPinIndex : char
+enum MagicPinIndex : PinIndex
 {
-	INVALID_PIN_INDEX_MIN_1           = -127,
-	INVALID_PIN_INDEX_MIN_2           = -128,
+	INVALID_PIN_INDEX_MIN_1           = INT8_MIN + 1,
+	INVALID_PIN_INDEX_MIN_2           = INT8_MIN,
 	INVALID_PIN_INDEX                 = -1,
 	ENTRY_POINT_PIN_INDEX             = -2,
 	FUNCTIONAL_AUTO_EXECUTE_PIN_INDEX = -3

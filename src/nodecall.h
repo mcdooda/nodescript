@@ -3,7 +3,7 @@
 
 typedef int NodeCall;
 
-enum MagicNodeCall
+enum MagicNodeCall : NodeCall
 {
 	INVALID_NODE_CALL = -1
 };

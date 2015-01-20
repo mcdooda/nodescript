@@ -81,7 +81,7 @@ void Node::debugPrintPins() const
 	std::cerr << "Node: " << debugGetNodeName() << std::endl;
 	for (PinIndex pinIndex = 0; pinIndex < m_debugCurrentPinIndex; ++pinIndex)
 	{
-		std::cerr << "pin#" << static_cast<int>(pinIndex) << " \"" << getPinName(pinIndex) << "\": " << debugGetPinType(pinIndex) << std::endl;
+		std::cerr << "pin#" << pinIndex << " \"" << getPinName(pinIndex) << "\": " << debugGetPinType(pinIndex) << std::endl;
 	}
 	std::cerr << std::endl;
 }
