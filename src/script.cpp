@@ -16,12 +16,12 @@ Script::~Script()
 NodeCall Script::addNode(Node* node)
 {
 	#ifndef NDEBUG
-	node->debugGetNodeName();
+	node->debugGetNodeName(); // ensures a name is given to the actual node type
 	#endif
 	m_nodes.push_back(node);
 	NodeCall nodeCall = m_nodes.size() - 1;
-	m_outputPins[nodeCall] = std::map<PinIndex, std::vector<Pin>>();
-	m_inputPins[nodeCall] = std::map<PinIndex, Pin>();
+	m_outputPins.emplace(std::piecewise_construct, std::forward_as_tuple(nodeCall), std::forward_as_tuple());
+	m_inputPins.emplace(std::piecewise_construct, std::forward_as_tuple(nodeCall), std::forward_as_tuple());
 	node->addedToScript(this, nodeCall);
 	return nodeCall;
 }
@@ -32,8 +32,8 @@ void Script::addLink(NodeCall nodeCall1, PinIndex outputPinIndex, NodeCall nodeC
 	assert(outputPinIndex >= 0);
 	assert(debugIsNodeCallValid(nodeCall2));
 	assert(inputPinIndex >= 0);
-	m_outputPins[nodeCall1][outputPinIndex].push_back(Pin(nodeCall2, inputPinIndex));
-	m_inputPins[nodeCall2][inputPinIndex] = Pin(nodeCall1, outputPinIndex);
+	m_outputPins[nodeCall1][outputPinIndex].emplace_back(nodeCall2, inputPinIndex);
+	m_inputPins[nodeCall2].emplace(std::piecewise_construct, std::forward_as_tuple(inputPinIndex), std::forward_as_tuple(nodeCall1, outputPinIndex));
 }
 
 ScriptRuntime* Script::createRuntime()
@@ -57,9 +57,9 @@ int Script::getNumNodes() const
 	return m_nodes.size();
 }
 
-void Script::getInputPins(NodeCall nodeCall, PinIndex outputPinIndex, std::vector<Pin>& pins)
+void Script::getInputPins(NodeCall nodeCall, PinIndex outputPinIndex, std::vector<Pin>*& pins)
 {
-	pins = m_outputPins[nodeCall][outputPinIndex];
+	pins = &m_outputPins[nodeCall][outputPinIndex];
 }
 
 void Script::getOutputPin(NodeCall nodeCall, PinIndex inputPinIndex, Pin& pin)

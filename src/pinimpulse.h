@@ -13,7 +13,10 @@ class PinImpulse
 		PinImpulse(const PinImpulse& pinImpulse);
 		void operator=(const PinImpulse& pinImpulse);
 		
+		inline void setNodeRuntime(NodeRuntime* nodeRuntime) { m_nodeRuntime = nodeRuntime; }
 		inline NodeRuntime* getNodeRuntime() const { return m_nodeRuntime; }
+		
+		inline void setInputPinIndex(PinIndex inputPinIndex) { m_inputPinIndex = inputPinIndex; }
 		inline PinIndex getInputPinIndex() const { return m_inputPinIndex; }
 		
 		// returns whether the pin may be connected, can return true with invalid pins

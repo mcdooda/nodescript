@@ -49,12 +49,16 @@ class NodeRuntime
 		template <class T>
 		void readPin(typename T::ValueType& value)
 		{
+			assert(m_inputValues);
 			assert(debugIsInputValuePinIndexValid(T::Index));
 			int index = getInputValueIndexFromPinIndex(T::Index);
-			NodeRuntime* inputRuntime = m_inputRuntimes[index];
-			if (inputRuntime)
+			if (m_inputRuntimes)
 			{
-				inputRuntime->execute(FUNCTIONAL_AUTO_EXECUTE_PIN_INDEX);
+				NodeRuntime* inputRuntime = m_inputRuntimes[index];
+				if (inputRuntime)
+				{
+					inputRuntime->execute(FUNCTIONAL_AUTO_EXECUTE_PIN_INDEX);
+				}
 			}
 			readPinValue<typename T::ValueType>(*m_inputValues[index], value);
 		}
@@ -63,6 +67,7 @@ class NodeRuntime
 		void writePin(typename T::ValueType value)
 		{
 			#ifndef NDEBUG
+			assert(m_outputValues);
 			if (!debugIsOutputValuePinIndexValid(T::Index))
 			{
 				std::cerr << "Trying to write to a pin of type \"" << debugGetPinType(T::Index) << "\"" << std::endl;
@@ -76,29 +81,26 @@ class NodeRuntime
 		template <class T>
 		void impulse()
 		{
+			assert(m_outputImpulses);
 			assert(debugIsOutputImpulsePinIndexValid(T::Index));
 			int index = getOutputImpulseIndexFromPinIndex(T::Index);
 			const std::vector<PinImpulse>& pinImpulses = m_outputImpulses[index];
 			for (const PinImpulse& pinImpulse : pinImpulses)
 			{
-				if (pinImpulse.isConnected())
-				{
-					NodeRuntime* outputRuntime = pinImpulse.getNodeRuntime();
-					assert(outputRuntime->debugIsInputImpulsePinIndexValid(pinImpulse.getInputPinIndex()));
-					outputRuntime->execute(pinImpulse.getInputPinIndex());
-				}
+				assert(pinImpulse.isConnected());
+				NodeRuntime* outputRuntime = pinImpulse.getNodeRuntime();
+				assert(outputRuntime->debugIsInputImpulsePinIndexValid(pinImpulse.getInputPinIndex()));
+				outputRuntime->execute(pinImpulse.getInputPinIndex());
 			}
 		}
 		
 		template <class T>
 		void delayedImpulse()
 		{
+			assert(false); // does not work yet... (some delays may not be intentional)
 			++(*m_currentExecutionIndex);
 			impulse<T>();
 		}
-		
-		const Node* m_node;
-		NodeCall m_nodeCall;
 		
 		NodeRuntime** m_inputRuntimes;
 		PinValue** m_inputValues;
@@ -106,6 +108,9 @@ class NodeRuntime
 		std::vector<PinImpulse>* m_outputImpulses;
 		
 		int* m_currentExecutionIndex;
+		
+		const Node* m_node;
+		NodeCall m_nodeCall;
 }; // NodeRuntime
 
 #endif // NODERUNTIME_H

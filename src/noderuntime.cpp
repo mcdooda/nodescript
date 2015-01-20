@@ -1,18 +1,19 @@
 #include <cstring>
 #include <typeinfo>
 #include <iostream>
+#include <algorithm>
 #include "noderuntime.h"
 #include "node.h"
 #include "scriptruntime.h"
 #include "pinimpulse.h"
 
 NodeRuntime::NodeRuntime(const Node* node, NodeCall nodeCall) :
-	m_node(node),
-	m_nodeCall(nodeCall),
 	m_inputRuntimes(nullptr),
 	m_inputValues(nullptr),
 	m_outputValues(nullptr),
-	m_outputImpulses(nullptr)
+	m_outputImpulses(nullptr),
+	m_node(node),
+	m_nodeCall(nodeCall)
 {
 	createInputValues();
 	createOutputValues();
@@ -158,19 +159,22 @@ void NodeRuntime::optimizeInputValueLinks(ScriptRuntime* scriptRuntime)
 void NodeRuntime::optimizeOutputImpulseLinks(ScriptRuntime* scriptRuntime)
 {
 	Script* script = scriptRuntime->getScript();
-	std::vector<Pin> inputPins;
+	std::vector<Pin>* inputPins;
 	for (PinIndex pinIndex = m_node->m_firstOutImpulsePinIndex; pinIndex <= m_node->m_lastOutImpulsePinIndex; ++pinIndex)
 	{
 		script->getInputPins(m_nodeCall, pinIndex, inputPins);
-		for (const Pin& inputPin : inputPins)
+		int numConnectedPins = std::count_if(inputPins->begin(), inputPins->end(), [](const Pin& pin){ return pin.isConnected(); });
+		int outIndex = getOutputImpulseIndexFromPinIndex(pinIndex);
+		m_outputImpulses[outIndex].reserve(numConnectedPins);
+		
+		for (const Pin& inputPin : *inputPins)
 		{
 			if (inputPin.isConnected())
 			{
 				assert(script->debugIsNodeCallValid(inputPin.getNodeCall())); // The output node is invalid
 				NodeRuntime* outputRuntime = scriptRuntime->getNodeCallRuntime(inputPin.getNodeCall());
 				assert(outputRuntime->debugIsInputImpulsePinIndexValid(inputPin.getIndex())); // The input pin is invalid
-				int outIndex = getOutputImpulseIndexFromPinIndex(pinIndex);
-				m_outputImpulses[outIndex].push_back(PinImpulse(outputRuntime, inputPin.getIndex()));
+				m_outputImpulses[outIndex].emplace_back(outputRuntime, inputPin.getIndex());
 			}
 		}
 	}

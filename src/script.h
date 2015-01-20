@@ -27,7 +27,7 @@ class Script
 		int getNumNodes() const;
 		inline const std::vector<Node*>& getNodes() const { return m_nodes; }
 		
-		void getInputPins(NodeCall nodeCall, PinIndex outputPinIndex, std::vector<Pin>& pins);
+		void getInputPins(NodeCall nodeCall, PinIndex outputPinIndex, std::vector<Pin>*& pins);
 		void getOutputPin(NodeCall nodeCall, PinIndex inputPinIndex, Pin& pin);
 		
 		#ifndef NDEBUG
