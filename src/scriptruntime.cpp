@@ -20,7 +20,7 @@ ScriptRuntime::~ScriptRuntime()
 	{
 		delete m_nodeRuntimes[i];
 	}
-	delete m_nodeRuntimes;
+	delete[] m_nodeRuntimes;
 }
 
 void ScriptRuntime::execute()

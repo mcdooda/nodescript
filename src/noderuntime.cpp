@@ -21,10 +21,10 @@ NodeRuntime::NodeRuntime(const Node* node, NodeCall nodeCall) :
 
 NodeRuntime::~NodeRuntime()
 {
-	delete m_inputRuntimes;
-	delete m_inputValues;
-	delete m_outputValues;
-	delete m_outputImpulses;
+	delete[] m_inputRuntimes;
+	delete[] m_inputValues;
+	delete[] m_outputValues;
+	delete[] m_outputImpulses;
 }
 
 void NodeRuntime::execute(PinIndex inputPinIndex)
@@ -94,7 +94,7 @@ void NodeRuntime::createOutputImpulses()
 	int numImpulses = m_node->m_lastOutImpulsePinIndex - m_node->m_firstOutImpulsePinIndex + 1;
 	if (numImpulses > 0)
 	{
-		m_outputImpulses = new PinImpulse[numImpulses];
+		m_outputImpulses = new std::vector<PinImpulse>[numImpulses];
 	}
 }
 
@@ -170,7 +170,7 @@ void NodeRuntime::optimizeOutputImpulseLinks(ScriptRuntime* scriptRuntime)
 				NodeRuntime* outputRuntime = scriptRuntime->getNodeCallRuntime(inputPin.getNodeCall());
 				assert(outputRuntime->debugIsInputImpulsePinIndexValid(inputPin.getIndex())); // The input pin is invalid
 				int outIndex = getOutputImpulseIndexFromPinIndex(pinIndex);
-				m_outputImpulses[outIndex] = PinImpulse(outputRuntime, inputPin.getIndex());
+				m_outputImpulses[outIndex].push_back(PinImpulse(outputRuntime, inputPin.getIndex()));
 			}
 		}
 	}

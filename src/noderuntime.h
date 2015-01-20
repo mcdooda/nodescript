@@ -1,6 +1,7 @@
 #ifndef NODERUNTIME_H
 #define NODERUNTIME_H
 
+#include <vector>
 #include <map>
 #include <type_traits>
 #include <cassert>
@@ -77,12 +78,15 @@ class NodeRuntime
 		{
 			assert(debugIsOutputImpulsePinIndexValid(T::Index));
 			int index = getOutputImpulseIndexFromPinIndex(T::Index);
-			const PinImpulse& pinImpulse = m_outputImpulses[index];
-			if (pinImpulse.isConnected())
+			const std::vector<PinImpulse>& pinImpulses = m_outputImpulses[index];
+			for (const PinImpulse& pinImpulse : pinImpulses)
 			{
-				NodeRuntime* outputRuntime = pinImpulse.getNodeRuntime();
-				assert(outputRuntime->debugIsInputImpulsePinIndexValid(pinImpulse.getInputPinIndex()));
-				outputRuntime->execute(pinImpulse.getInputPinIndex());
+				if (pinImpulse.isConnected())
+				{
+					NodeRuntime* outputRuntime = pinImpulse.getNodeRuntime();
+					assert(outputRuntime->debugIsInputImpulsePinIndexValid(pinImpulse.getInputPinIndex()));
+					outputRuntime->execute(pinImpulse.getInputPinIndex());
+				}
 			}
 		}
 		
@@ -99,7 +103,7 @@ class NodeRuntime
 		NodeRuntime** m_inputRuntimes;
 		PinValue** m_inputValues;
 		PinValue* m_outputValues;
-		PinImpulse* m_outputImpulses;
+		std::vector<PinImpulse>* m_outputImpulses;
 		
 		int* m_currentExecutionIndex;
 }; // NodeRuntime
