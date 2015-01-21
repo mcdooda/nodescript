@@ -85,27 +85,36 @@ class DoubleConstantValueNode : public ConstantValueNode<double>
 		NODE(DoubleConstantValueNode, "Double Value");
 };
 
-class StringConstantValueNodeRuntime : public ConstantValueNodeRuntime<std::string*>
+template <class T>
+class PointerConstantValueNodeRuntime : public ConstantValueNodeRuntime<T*>
 {
 	public:
-		StringConstantValueNodeRuntime(const Node* node, NodeCall nodeCall) : ConstantValueNodeRuntime(node, nodeCall) {}
+		PointerConstantValueNodeRuntime(const Node* node, NodeCall nodeCall) : ConstantValueNodeRuntime<T*>(node, nodeCall) {}
 		
-		void setValue(const std::string& value)
+		void setValue(const T& value)
 		{
 			m_value = value;
-			writePin<typename ConstantValueNode<std::string*>::ValueOutPin>(&m_value);
+			ConstantValueNodeRuntime<T*>::setValue(&m_value);
 		}
 		
 	private:
-		std::string m_value;
+		T m_value;
 };
 
-class StringConstantValueNode : public ConstantValueNode<std::string*>
-{
-	public:
-		NODE(StringConstantValueNode, "String Value");
-		NODE_RUNTIME_TYPE(StringConstantValueNodeRuntime);
-};
+#define POINTER_CONSTANT_VALUE_NODE(NodeType, Type, NodeName) \
+	class NodeType##Runtime : public PointerConstantValueNodeRuntime<Type> \
+	{ \
+		public: \
+			NodeType##Runtime(const Node* node, NodeCall nodeCall) : PointerConstantValueNodeRuntime<Type>(node, nodeCall) {} \
+	}; \
+	class NodeType : public ConstantValueNode<Type*> \
+	{ \
+		public: \
+			NODE(NodeType, NodeName); \
+			NODE_RUNTIME_TYPE(NodeType##Runtime); \
+	};
+
+POINTER_CONSTANT_VALUE_NODE(StringConstantValueNode, std::string, "String Value");
 
 } // node
 
