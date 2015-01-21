@@ -12,9 +12,7 @@ Node::Node() :
 	m_firstOutImpulsePinIndex(INVALID_PIN_INDEX_MIN_1),
 	m_lastOutImpulsePinIndex(INVALID_PIN_INDEX_MIN_2)
 {
-	#ifndef NDEBUG
-	m_debugCurrentPinIndex = 0;
-	#endif
+	
 }
 
 Node::~Node()
@@ -79,7 +77,8 @@ const char* Node::debugGetPinType(PinIndex pinIndex) const
 void Node::debugPrintPins() const
 {
 	std::cerr << "Node: " << debugGetNodeName() << std::endl;
-	for (PinIndex pinIndex = 0; pinIndex < m_debugCurrentPinIndex; ++pinIndex)
+	int numPins = static_cast<int>(m_debugPinTypeIds.size());
+	for (PinIndex pinIndex = 0; pinIndex < numPins; ++pinIndex)
 	{
 		std::cerr << "pin#" << pinIndex << " \"" << getPinName(pinIndex) << "\": " << debugGetPinType(pinIndex) << std::endl;
 	}
