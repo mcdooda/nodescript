@@ -17,6 +17,7 @@ class Script
 		
 		NodeCall addNode(Node* node);
 		void addLink(NodeCall nodeCall1, PinIndex outputPinIndex, NodeCall nodeCall2, PinIndex inputPinIndex);
+		bool isLinkValid(NodeCall nodeCall1, PinIndex outputPinIndex, NodeCall nodeCall2, PinIndex inputPinIndex);
 		
 		ScriptRuntime* createRuntime();
 		

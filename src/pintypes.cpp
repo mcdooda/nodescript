@@ -1,5 +1,3 @@
-#ifndef NDEBUG
-
 #include "pinvalue.h"
 
 #define PINTYPES_CPP
@@ -9,8 +7,6 @@
 #define PIN_TYPE(Type) char PinType<Type>::id
 
 #include "pintypes.h"
-
-#endif
 
 
 

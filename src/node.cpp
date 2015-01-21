@@ -34,12 +34,23 @@ const char* Node::getPinName(PinIndex pinIndex) const
 	return "<Unknown pin name>";
 }
 
+PinTypeId Node::getPinTypeId(PinIndex pinIndex) const
+{
+	assert(debugIsPinIndexValid(pinIndex));
+	return m_pinTypeIds[pinIndex];
+}
+
 NodeRuntime* Node::createRuntime(ScriptRuntime* scriptRuntime, NodeCall nodeCall) const
 {
 	return new NodeRuntime(this, nodeCall);
 }
 
 #ifndef NDEBUG
+bool Node::debugIsPinIndexValid(PinIndex pinIndex) const
+{
+	return pinIndex >= 0 && pinIndex < static_cast<int>(m_pinTypeIds.size());
+}
+
 bool Node::debugIsInputValuePinIndexValid(PinIndex pinIndex) const
 {
 	return pinIndex >= m_firstInValuePinIndex && pinIndex <= m_lastInValuePinIndex;
@@ -77,7 +88,7 @@ const char* Node::debugGetPinType(PinIndex pinIndex) const
 void Node::debugPrintPins() const
 {
 	std::cerr << "Node: " << debugGetNodeName() << std::endl;
-	int numPins = static_cast<int>(m_debugPinTypeIds.size());
+	int numPins = static_cast<int>(m_pinTypeIds.size());
 	for (PinIndex pinIndex = 0; pinIndex < numPins; ++pinIndex)
 	{
 		std::cerr << "pin#" << pinIndex << " \"" << getPinName(pinIndex) << "\": " << debugGetPinType(pinIndex) << std::endl;

@@ -42,6 +42,7 @@ class Node
 		virtual const char* debugGetNodeName() const;
 		#endif
 		virtual const char* getPinName(PinIndex pinIndex) const;
+		PinTypeId getPinTypeId(PinIndex pinIndex) const;
 		
 		virtual void execute(NodeRuntime* runtime, PinIndex inputPinIndex) const = 0;
 		
@@ -50,6 +51,7 @@ class Node
 		virtual NodeRuntime* createRuntime(ScriptRuntime* scriptRuntime, NodeCall nodeCall) const;
 		
 		#ifndef NDEBUG
+		bool debugIsPinIndexValid(PinIndex pinIndex) const;
 		bool debugIsInputValuePinIndexValid(PinIndex pinIndex) const;
 		bool debugIsInputImpulsePinIndexValid(PinIndex pinIndex) const;
 		bool debugIsOutputValuePinIndexValid(PinIndex pinIndex) const;
@@ -63,13 +65,13 @@ class Node
 		void inValuePin()
 		{
 			#ifndef NDEBUG
-			assert(m_debugPinTypeIds.size() == T::Index);
+			assert(m_pinTypeIds.size() == T::Index);
 			static_assert(PIN_TYPE_VALID(typename T::ValueType), "This pin type is not registered!");
-			m_debugPinTypeIds.push_back(PIN_TYPE_ID(typename T::ValueType));
 			assert(m_firstInImpulsePinIndex == INVALID_PIN_INDEX_MIN_1);
 			assert(m_firstOutValuePinIndex == INVALID_PIN_INDEX_MIN_1);
 			assert(m_firstOutImpulsePinIndex == INVALID_PIN_INDEX_MIN_1);
 			#endif
+			m_pinTypeIds.push_back(PIN_TYPE_ID(typename T::ValueType));
 			if (m_firstInValuePinIndex == INVALID_PIN_INDEX_MIN_1)
 			{
 				m_firstInValuePinIndex = T::Index;
@@ -83,11 +85,11 @@ class Node
 			#ifndef NDEBUG
 			static_assert(std::is_same<typename T::ValueType, void>::value, "Impulse pins cannot have a type");
 			assert(!isFunctional());
-			assert(m_debugPinTypeIds.size() == T::Index);
-			m_debugPinTypeIds.push_back(PIN_TYPE_IMPULSE_ID);
+			assert(m_pinTypeIds.size() == T::Index);
 			assert(m_firstOutValuePinIndex == INVALID_PIN_INDEX_MIN_1);
 			assert(m_firstOutImpulsePinIndex == INVALID_PIN_INDEX_MIN_1);
 			#endif
+			m_pinTypeIds.push_back(PIN_TYPE_IMPULSE_ID);
 			if (m_firstInImpulsePinIndex == INVALID_PIN_INDEX_MIN_1)
 			{
 				m_firstInImpulsePinIndex = T::Index;
@@ -99,11 +101,11 @@ class Node
 		void outValuePin()
 		{
 			#ifndef NDEBUG
-			assert(m_debugPinTypeIds.size() == T::Index);
+			assert(m_pinTypeIds.size() == T::Index);
 			static_assert(PIN_TYPE_VALID(typename T::ValueType), "This pin type is not registered!");
-			m_debugPinTypeIds.push_back(PIN_TYPE_ID(typename T::ValueType));
 			assert(m_firstOutImpulsePinIndex == INVALID_PIN_INDEX_MIN_1);
 			#endif
+			m_pinTypeIds.push_back(PIN_TYPE_ID(typename T::ValueType));
 			if (m_firstOutValuePinIndex == INVALID_PIN_INDEX_MIN_1)
 			{
 				m_firstOutValuePinIndex = T::Index;
@@ -116,9 +118,9 @@ class Node
 		{
 			#ifndef NDEBUG
 			static_assert(std::is_same<typename T::ValueType, void>::value, "Impulse pins cannot have a type");
-			assert(m_debugPinTypeIds.size() == T::Index);
-			m_debugPinTypeIds.push_back(PIN_TYPE_IMPULSE_ID);
+			assert(m_pinTypeIds.size() == T::Index);
 			#endif
+			m_pinTypeIds.push_back(PIN_TYPE_IMPULSE_ID);
 			if (m_firstOutImpulsePinIndex == INVALID_PIN_INDEX_MIN_1)
 			{
 				m_firstOutImpulsePinIndex = T::Index;
@@ -129,23 +131,25 @@ class Node
 		template <class T>
 		void readPin(NodeRuntime* runtime, typename T::ValueType& value) const
 		{
-			assert(m_debugPinTypeIds[T::Index] == PIN_TYPE_ID(typename T::ValueType));
+			assert(m_pinTypeIds[T::Index] == PIN_TYPE_ID(typename T::ValueType));
 			runtime->readPin<T>(value);
 		}
 		
 		template <class T>
 		void writePin(NodeRuntime* runtime, typename T::ValueType value) const
 		{
-			assert(m_debugPinTypeIds[T::Index] == PIN_TYPE_ID(typename T::ValueType));
+			assert(m_pinTypeIds[T::Index] == PIN_TYPE_ID(typename T::ValueType));
 			runtime->writePin<T>(value);
 		}
 		
 		template <class T>
 		void impulse(NodeRuntime* runtime) const
 		{
-			assert(m_debugPinTypeIds[T::Index] == PIN_TYPE_IMPULSE_ID);
+			assert(m_pinTypeIds[T::Index] == PIN_TYPE_IMPULSE_ID);
 			runtime->impulse<T>();
 		}
+		
+		std::vector<PinTypeId> m_pinTypeIds;
 		
 		PinIndex m_firstInValuePinIndex;
 		PinIndex m_lastInValuePinIndex;
@@ -158,10 +162,6 @@ class Node
 		
 		PinIndex m_firstOutImpulsePinIndex;
 		PinIndex m_lastOutImpulsePinIndex;
-		
-		#ifndef NDEBUG
-		std::vector<PinTypeId> m_debugPinTypeIds;
-		#endif
 		
 }; // Node
 

@@ -91,12 +91,14 @@ class PointerConstantValueNodeRuntime : public ConstantValueNodeRuntime<T*>
 			NODE_RUNTIME_TYPE(NodeType##Runtime); \
 	};
 
+// native pin types
 CONSTANT_VALUE_NODE(BoolConstantValueNode, bool, "Bool Value");
 CONSTANT_VALUE_NODE(IntConstantValueNode, int, "Int Value");
 CONSTANT_VALUE_NODE(LongConstantValueNode, long, "Long Value");
 CONSTANT_VALUE_NODE(FloatConstantValueNode, float, "Float Value");
 CONSTANT_VALUE_NODE(DoubleConstantValueNode, double, "Double Value");
 
+// pointer pin types
 POINTER_CONSTANT_VALUE_NODE(StringConstantValueNode, std::string, "String Value");
 
 } // node

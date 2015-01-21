@@ -20,7 +20,6 @@ class PinType
 		enum { Valid = false };
 };
 
-#ifndef NDEBUG
 #define PIN_TYPE(Type) 				\
 	template <>						\
 	class PinType<Type>				\
@@ -37,7 +36,6 @@ class PinType
 typedef char* PinTypeId;
 
 #include "pintypes.h"
-#endif
 
 // read
 template <class T>
