@@ -55,35 +55,12 @@ void ConstantValueNodeRuntime<T>::setValue(const T& value)
 	writePin<typename ConstantValueNode<T>::ValueOutPin>(value);
 }
 
-class BoolConstantValueNode : public ConstantValueNode<bool>
-{
-	public:
-		NODE(BoolConstantValueNode, "Bool Value");
-};
-
-class IntConstantValueNode : public ConstantValueNode<int>
-{
-	public:
-		NODE(IntConstantValueNode, "Int Value");
-};
-
-class LongConstantValueNode : public ConstantValueNode<long>
-{
-	public:
-		NODE(LongConstantValueNode, "Long Value");
-};
-
-class FloatConstantValueNode : public ConstantValueNode<float>
-{
-	public:
-		NODE(FloatConstantValueNode, "Float Value");
-};
-
-class DoubleConstantValueNode : public ConstantValueNode<double>
-{
-	public:
-		NODE(DoubleConstantValueNode, "Double Value");
-};
+#define CONSTANT_VALUE_NODE(NodeType, Type, NodeName) \
+	class NodeType : public ConstantValueNode<Type> \
+	{ \
+		public: \
+			NODE(NodeType, NodeName); \
+	};
 
 template <class T>
 class PointerConstantValueNodeRuntime : public ConstantValueNodeRuntime<T*>
@@ -113,6 +90,12 @@ class PointerConstantValueNodeRuntime : public ConstantValueNodeRuntime<T*>
 			NODE(NodeType, NodeName); \
 			NODE_RUNTIME_TYPE(NodeType##Runtime); \
 	};
+
+CONSTANT_VALUE_NODE(BoolConstantValueNode, bool, "Bool Value");
+CONSTANT_VALUE_NODE(IntConstantValueNode, int, "Int Value");
+CONSTANT_VALUE_NODE(LongConstantValueNode, long, "Long Value");
+CONSTANT_VALUE_NODE(FloatConstantValueNode, float, "Float Value");
+CONSTANT_VALUE_NODE(DoubleConstantValueNode, double, "Double Value");
 
 POINTER_CONSTANT_VALUE_NODE(StringConstantValueNode, std::string, "String Value");
 
