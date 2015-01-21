@@ -20,11 +20,24 @@ Node::~Node()
 	
 }
 
-#ifndef NDEBUG
+void Node::optimize()
+{
+	#ifdef NODESCRIPT_DEBUG
+	int gain = m_pinTypeIds.capacity() * sizeof(PinTypeId);
+	#endif
+	m_pinTypeIds.shrink_to_fit();
+	#ifdef NODESCRIPT_DEBUG
+	gain -= m_pinTypeIds.capacity() * sizeof(PinTypeId);
+	#ifdef NODESCRIPT_VERBOSE
+	std::cerr << "[node " << debugGetNodeName() << "] we won " << gain << " bytes" << std::endl;
+	#endif
+	#endif
+}
+
+#ifdef NODESCRIPT_DEBUG
 const char* Node::debugGetNodeName() const
 {
-	std::cerr << "Node \"" << typeid(*this).name() << "\" misses a name!" << std::endl;
-	assert(false);
+	NODESCRIPT_ASSERT_MSG(false, "Node \"%s\" misses a name!", typeid(*this).name());
 	return "<Unnamed node>";
 }
 #endif
@@ -36,7 +49,7 @@ const char* Node::getPinName(PinIndex pinIndex) const
 
 PinTypeId Node::getPinTypeId(PinIndex pinIndex) const
 {
-	assert(debugIsPinIndexValid(pinIndex));
+	NODESCRIPT_ASSERT(debugIsPinIndexValid(pinIndex));
 	return m_pinTypeIds[pinIndex];
 }
 
@@ -45,7 +58,7 @@ NodeRuntime* Node::createRuntime(ScriptRuntime* scriptRuntime, NodeCall nodeCall
 	return new NodeRuntime(this, nodeCall);
 }
 
-#ifndef NDEBUG
+#ifdef NODESCRIPT_DEBUG
 bool Node::debugIsPinIndexValid(PinIndex pinIndex) const
 {
 	return pinIndex >= 0 && pinIndex < static_cast<int>(m_pinTypeIds.size());

@@ -13,7 +13,7 @@ class ScriptRuntime;
 #define NODE_FACTORY(NodeConstructor) \
 	static Node* factory() { return NodeConstructor; } \
 
-#ifndef NDEBUG
+#ifdef NODESCRIPT_DEBUG
 #define NODE_NAME(NodeName) \
 	static const char* nodeName() { return NodeName; } \
 	const char* debugGetNodeName() const override { return NodeName; }
@@ -38,7 +38,9 @@ class Node
 		
 		virtual bool isFunctional() const { return false; }
 		
-		#ifndef NDEBUG
+		void optimize();
+		
+		#ifdef NODESCRIPT_DEBUG
 		virtual const char* debugGetNodeName() const;
 		#endif
 		virtual const char* getPinName(PinIndex pinIndex) const;
@@ -50,7 +52,7 @@ class Node
 		
 		virtual NodeRuntime* createRuntime(ScriptRuntime* scriptRuntime, NodeCall nodeCall) const;
 		
-		#ifndef NDEBUG
+		#ifdef NODESCRIPT_DEBUG
 		bool debugIsPinIndexValid(PinIndex pinIndex) const;
 		bool debugIsInputValuePinIndexValid(PinIndex pinIndex) const;
 		bool debugIsInputImpulsePinIndexValid(PinIndex pinIndex) const;
@@ -64,13 +66,12 @@ class Node
 		template <class T>
 		void inValuePin()
 		{
-			#ifndef NDEBUG
-			assert(m_pinTypeIds.size() == T::Index);
 			static_assert(PIN_TYPE_VALID(typename T::ValueType), "This pin type is not registered!");
-			assert(m_firstInImpulsePinIndex == INVALID_PIN_INDEX_MIN_1);
-			assert(m_firstOutValuePinIndex == INVALID_PIN_INDEX_MIN_1);
-			assert(m_firstOutImpulsePinIndex == INVALID_PIN_INDEX_MIN_1);
-			#endif
+			NODESCRIPT_ASSERT(m_pinTypeIds.size() == T::Index);
+			NODESCRIPT_ASSERT(m_firstInImpulsePinIndex == INVALID_PIN_INDEX_MIN_1);
+			NODESCRIPT_ASSERT(m_firstOutValuePinIndex == INVALID_PIN_INDEX_MIN_1);
+			NODESCRIPT_ASSERT(m_firstOutImpulsePinIndex == INVALID_PIN_INDEX_MIN_1);
+			
 			m_pinTypeIds.push_back(PIN_TYPE_ID(typename T::ValueType));
 			if (m_firstInValuePinIndex == INVALID_PIN_INDEX_MIN_1)
 			{
@@ -82,13 +83,12 @@ class Node
 		template <class T>
 		void inImpulsePin()
 		{
-			#ifndef NDEBUG
 			static_assert(std::is_same<typename T::ValueType, void>::value, "Impulse pins cannot have a type");
-			assert(!isFunctional());
-			assert(m_pinTypeIds.size() == T::Index);
-			assert(m_firstOutValuePinIndex == INVALID_PIN_INDEX_MIN_1);
-			assert(m_firstOutImpulsePinIndex == INVALID_PIN_INDEX_MIN_1);
-			#endif
+			NODESCRIPT_ASSERT(!isFunctional());
+			NODESCRIPT_ASSERT(m_pinTypeIds.size() == T::Index);
+			NODESCRIPT_ASSERT(m_firstOutValuePinIndex == INVALID_PIN_INDEX_MIN_1);
+			NODESCRIPT_ASSERT(m_firstOutImpulsePinIndex == INVALID_PIN_INDEX_MIN_1);
+			
 			m_pinTypeIds.push_back(PIN_TYPE_IMPULSE_ID);
 			if (m_firstInImpulsePinIndex == INVALID_PIN_INDEX_MIN_1)
 			{
@@ -100,11 +100,10 @@ class Node
 		template <class T>
 		void outValuePin()
 		{
-			#ifndef NDEBUG
-			assert(m_pinTypeIds.size() == T::Index);
 			static_assert(PIN_TYPE_VALID(typename T::ValueType), "This pin type is not registered!");
-			assert(m_firstOutImpulsePinIndex == INVALID_PIN_INDEX_MIN_1);
-			#endif
+			NODESCRIPT_ASSERT(m_pinTypeIds.size() == T::Index);
+			NODESCRIPT_ASSERT(m_firstOutImpulsePinIndex == INVALID_PIN_INDEX_MIN_1);
+			
 			m_pinTypeIds.push_back(PIN_TYPE_ID(typename T::ValueType));
 			if (m_firstOutValuePinIndex == INVALID_PIN_INDEX_MIN_1)
 			{
@@ -116,10 +115,9 @@ class Node
 		template <class T>
 		void outImpulsePin()
 		{
-			#ifndef NDEBUG
 			static_assert(std::is_same<typename T::ValueType, void>::value, "Impulse pins cannot have a type");
-			assert(m_pinTypeIds.size() == T::Index);
-			#endif
+			NODESCRIPT_ASSERT(m_pinTypeIds.size() == T::Index);
+			
 			m_pinTypeIds.push_back(PIN_TYPE_IMPULSE_ID);
 			if (m_firstOutImpulsePinIndex == INVALID_PIN_INDEX_MIN_1)
 			{
@@ -131,21 +129,21 @@ class Node
 		template <class T>
 		void readPin(NodeRuntime* runtime, typename T::ValueType& value) const
 		{
-			assert(m_pinTypeIds[T::Index] == PIN_TYPE_ID(typename T::ValueType));
+			NODESCRIPT_ASSERT(m_pinTypeIds[T::Index] == PIN_TYPE_ID(typename T::ValueType));
 			runtime->readPin<T>(value);
 		}
 		
 		template <class T>
 		void writePin(NodeRuntime* runtime, typename T::ValueType value) const
 		{
-			assert(m_pinTypeIds[T::Index] == PIN_TYPE_ID(typename T::ValueType));
+			NODESCRIPT_ASSERT(m_pinTypeIds[T::Index] == PIN_TYPE_ID(typename T::ValueType));
 			runtime->writePin<T>(value);
 		}
 		
 		template <class T>
 		void impulse(NodeRuntime* runtime) const
 		{
-			assert(m_pinTypeIds[T::Index] == PIN_TYPE_IMPULSE_ID);
+			NODESCRIPT_ASSERT(m_pinTypeIds[T::Index] == PIN_TYPE_IMPULSE_ID);
 			runtime->impulse<T>();
 		}
 		

@@ -7,11 +7,14 @@
 #include "nodes/constantvaluenode.h"
 #include "nodes/math/addnode.h"
 
+#define NUM_NEW_SCRIPT 100
+#define NUM_EXECS 10000
+
 using namespace node;
 
 int main(int argc, char* argv[])
 {
-	for (int i = 0; i < 3; i++)
+	for (int i = 0; i < NUM_NEW_SCRIPT; i++)
 	{
 		ScriptEngine engine;
 	
@@ -58,8 +61,10 @@ int main(int argc, char* argv[])
 			script->addLink(testNodeCall1, TestNode::FloatOutPin::Index, testNodeCall2, TestNode::FloatInPin::Index);
 			script->addLink(testNodeCall1, TestNode::StringOutPin::Index, testNodeCall2, TestNode::StringInPin::Index);
 			script->addLink(testNodeCall1, TestNode::ImpulseOutPin::Index, testNodeCall2, TestNode::ImpulseInPin::Index);
+			
+			script->optimize();
 		
-			for (int j = 0; j < 10; ++j)
+			for (int j = 0; j < NUM_EXECS; ++j)
 			{
 				ScriptRuntime* scriptRuntime = script->createRuntime();
 			
@@ -72,7 +77,7 @@ int main(int argc, char* argv[])
 				StringConstantValueNodeRuntime* stringConstantValueNodeRuntime = scriptRuntime->getNodeCallRuntime<StringConstantValueNodeRuntime>(stringValueCall);
 				stringConstantValueNodeRuntime->setValue(std::string("String#") + std::to_string(j));
 			
-				std::cout << "Execution #" << j << " ======================================" << std::endl;
+				//std::cout << "Execution #" << j << " ======================================" << std::endl;
 				scriptRuntime->execute();
 				delete scriptRuntime;
 			}

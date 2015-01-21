@@ -1,5 +1,4 @@
 #include <cstring>
-#include <cassert>
 #include "scriptruntime.h"
 #include "script.h"
 #include "node.h"
@@ -35,7 +34,7 @@ void ScriptRuntime::execute()
 
 NodeRuntime* ScriptRuntime::getNodeCallRuntime(NodeCall nodeCall) const
 {
-	assert(m_script->debugIsNodeCallValid(nodeCall));
+	NODESCRIPT_ASSERT(m_script->debugIsNodeCallValid(nodeCall));
 	return m_nodeRuntimes[nodeCall];
 }
 

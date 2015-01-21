@@ -4,11 +4,11 @@
 #include <vector>
 #include <map>
 #include <type_traits>
-#include <cassert>
 #include <iostream>
 #include "pin.h"
 #include "pinvalue.h"
 #include "pinimpulse.h"
+#include "debug.h"
 
 class Node;
 class ScriptRuntime;
@@ -26,7 +26,7 @@ class NodeRuntime
 		
 		inline NodeCall getNodeCall() const { return m_nodeCall; }
 		
-		#ifndef NDEBUG
+		#ifdef NODESCRIPT_DEBUG
 		bool debugIsInputValuePinIndexValid(PinIndex pinIndex) const;
 		bool debugIsInputImpulsePinIndexValid(PinIndex pinIndex) const;
 		bool debugIsOutputValuePinIndexValid(PinIndex pinIndex) const;
@@ -49,8 +49,9 @@ class NodeRuntime
 		template <class T>
 		void readPin(typename T::ValueType& value)
 		{
-			assert(m_inputValues);
-			assert(debugIsInputValuePinIndexValid(T::Index));
+			NODESCRIPT_ASSERT(m_inputValues);
+			NODESCRIPT_ASSERT(debugIsInputValuePinIndexValid(T::Index));
+			
 			int index = getInputValueIndexFromPinIndex(T::Index);
 			if (m_inputRuntimes)
 			{
@@ -66,14 +67,8 @@ class NodeRuntime
 		template <class T>
 		void writePin(typename T::ValueType value)
 		{
-			#ifndef NDEBUG
-			assert(m_outputValues);
-			if (!debugIsOutputValuePinIndexValid(T::Index))
-			{
-				std::cerr << "Trying to write to a pin of type \"" << debugGetPinType(T::Index) << "\"" << std::endl;
-				assert(false);
-			}
-			#endif
+			NODESCRIPT_ASSERT(m_outputValues);
+			NODESCRIPT_ASSERT_MSG(debugIsOutputValuePinIndexValid(T::Index), "Trying to write to a pin of type \"%s\"", debugGetPinType(T::Index));
 			int index = getOutputValueIndexFromPinIndex(T::Index);
 			writePinValue<typename T::ValueType>(m_outputValues[index], value);
 		}
@@ -81,15 +76,16 @@ class NodeRuntime
 		template <class T>
 		void impulse()
 		{
-			assert(m_outputImpulses);
-			assert(debugIsOutputImpulsePinIndexValid(T::Index));
+			NODESCRIPT_ASSERT(m_outputImpulses);
+			NODESCRIPT_ASSERT(debugIsOutputImpulsePinIndexValid(T::Index));
+			
 			int index = getOutputImpulseIndexFromPinIndex(T::Index);
 			const std::vector<PinImpulse>& pinImpulses = m_outputImpulses[index];
 			for (const PinImpulse& pinImpulse : pinImpulses)
 			{
-				assert(pinImpulse.isConnected());
+				NODESCRIPT_ASSERT(pinImpulse.isConnected());
 				NodeRuntime* outputRuntime = pinImpulse.getNodeRuntime();
-				assert(outputRuntime->debugIsInputImpulsePinIndexValid(pinImpulse.getInputPinIndex()));
+				NODESCRIPT_ASSERT(outputRuntime->debugIsInputImpulsePinIndexValid(pinImpulse.getInputPinIndex()));
 				outputRuntime->execute(pinImpulse.getInputPinIndex());
 			}
 		}
@@ -97,7 +93,7 @@ class NodeRuntime
 		template <class T>
 		void delayedImpulse()
 		{
-			assert(false); // does not work yet... (some delays may not be intentional)
+			NODESCRIPT_BREAK(); // does not work yet... (some delays may not be intentional)
 			++(*m_currentExecutionIndex);
 			impulse<T>();
 		}

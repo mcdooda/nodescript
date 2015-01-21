@@ -1,4 +1,3 @@
-#include <cassert>
 #include "functionalnoderuntime.h"
 #include "node.h"
 
@@ -15,7 +14,7 @@ FunctionalNodeRuntime::~FunctionalNodeRuntime()
 
 void FunctionalNodeRuntime::execute(PinIndex inputPinIndex)
 {
-	assert(inputPinIndex == FUNCTIONAL_AUTO_EXECUTE_PIN_INDEX);
+	NODESCRIPT_ASSERT(inputPinIndex == FUNCTIONAL_AUTO_EXECUTE_PIN_INDEX);
 	if (m_lastExecutionIndex != *m_currentExecutionIndex)
 	{
 		m_lastExecutionIndex = *m_currentExecutionIndex;

@@ -42,9 +42,7 @@ template <class T>
 void readPinValue(const PinValue& pinValue, T& value)
 {
 	static_assert(std::is_pointer<T>::value, "Incompatible pin type!");
-	#ifndef NDEBUG
 	static_assert(PIN_TYPE_VALID(T), "This pin type is not registered!");
-	#endif
 	value = static_cast<T>(pinValue.pointerValue);
 }
 

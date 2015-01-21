@@ -6,6 +6,7 @@
 #include "node.h"
 #include "scriptruntime.h"
 #include "pinimpulse.h"
+#include "debug.h"
 
 NodeRuntime::NodeRuntime(const Node* node, NodeCall nodeCall) :
 	m_inputRuntimes(nullptr),
@@ -40,7 +41,7 @@ void NodeRuntime::optimizeLinks(ScriptRuntime* scriptRuntime)
 	m_currentExecutionIndex = scriptRuntime->getCurrentExecutionIndex();
 }
 
-#ifndef NDEBUG
+#ifdef NODESCRIPT_DEBUG
 bool NodeRuntime::debugIsInputValuePinIndexValid(PinIndex pinIndex) const
 {
 	return m_node->debugIsInputValuePinIndexValid(pinIndex);
@@ -121,13 +122,13 @@ void NodeRuntime::optimizeInputValueLinks(ScriptRuntime* scriptRuntime)
 	for (PinIndex pinIndex = m_node->m_firstInValuePinIndex; pinIndex <= m_node->m_lastInValuePinIndex; ++pinIndex)
 	{
 		script->getOutputPin(m_nodeCall, pinIndex, outputPin);
-		assert(script->debugIsNodeCallValid(outputPin.getNodeCall())); // The input pin is not connected to an other pin!
+		NODESCRIPT_ASSERT_MSG(script->debugIsNodeCallValid(outputPin.getNodeCall()), "The input pin is not connected to an other pin!");
 		NodeRuntime* inputRuntime = scriptRuntime->getNodeCallRuntime(outputPin.getNodeCall());
-		#ifndef NDEBUG
+		#ifdef NODESCRIPT_DEBUG
 		if (!outputPin.isConnected())
 		{
 			std::cerr << std::cout << typeid(this).name() << " pin#" << pinIndex << " is not connected!" << std::endl;
-			assert(false);
+			NODESCRIPT_BREAK();
 		}
 		if (!inputRuntime->debugIsOutputValuePinIndexValid(outputPin.getIndex()))
 		{
@@ -143,7 +144,7 @@ void NodeRuntime::optimizeInputValueLinks(ScriptRuntime* scriptRuntime)
 			m_node->debugPrintPins();
 			std::cerr << "Input node:" << std::endl;
 			inputRuntime->m_node->debugPrintPins();
-			assert(false);
+			NODESCRIPT_BREAK();
 		}
 		#endif
 		int inIndex = getInputValueIndexFromPinIndex(pinIndex);
@@ -171,9 +172,9 @@ void NodeRuntime::optimizeOutputImpulseLinks(ScriptRuntime* scriptRuntime)
 		{
 			if (inputPin.isConnected())
 			{
-				assert(script->debugIsNodeCallValid(inputPin.getNodeCall())); // The output node is invalid
+				NODESCRIPT_ASSERT_MSG(script->debugIsNodeCallValid(inputPin.getNodeCall()), "The output node #%d is invalid", inputPin.getNodeCall());
 				NodeRuntime* outputRuntime = scriptRuntime->getNodeCallRuntime(inputPin.getNodeCall());
-				assert(outputRuntime->debugIsInputImpulsePinIndexValid(inputPin.getIndex())); // The input pin is invalid
+				NODESCRIPT_ASSERT_MSG(outputRuntime->debugIsInputImpulsePinIndexValid(inputPin.getIndex()), "The input pin #%d is invalid", inputPin.getIndex());
 				m_outputImpulses[outIndex].emplace_back(outputRuntime, inputPin.getIndex());
 			}
 		}

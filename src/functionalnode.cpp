@@ -1,5 +1,6 @@
 #include "functionalnode.h"
 #include "functionalnoderuntime.h"
+#include "debug.h"
 
 FunctionalNode::FunctionalNode() : Node()
 {
@@ -13,7 +14,7 @@ FunctionalNode::~FunctionalNode()
 
 void FunctionalNode::execute(NodeRuntime* runtime, PinIndex inputPinIndex) const
 {
-	assert(inputPinIndex == FUNCTIONAL_AUTO_EXECUTE_PIN_INDEX);
+	NODESCRIPT_ASSERT(inputPinIndex == FUNCTIONAL_AUTO_EXECUTE_PIN_INDEX);
 	execute(runtime);
 }
 

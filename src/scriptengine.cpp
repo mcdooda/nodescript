@@ -31,8 +31,9 @@ Node* ScriptEngine::getNodeInstance(const std::string& nodeName)
 	}
 	else
 	{
-		assert(m_nodeFactories.find(nodeName) != m_nodeFactories.end()); // the node type is not registered
+		NODESCRIPT_ASSERT_MSG(m_nodeFactories.find(nodeName) != m_nodeFactories.end(), "The node type \"%s\" is not registered", nodeName.c_str());
 		node = m_nodeFactories[nodeName]();
+		node->optimize();
 		m_nodes[nodeName] = node;
 	}
 	return node;

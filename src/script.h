@@ -19,6 +19,8 @@ class Script
 		void addLink(NodeCall nodeCall1, PinIndex outputPinIndex, NodeCall nodeCall2, PinIndex inputPinIndex);
 		bool isLinkValid(NodeCall nodeCall1, PinIndex outputPinIndex, NodeCall nodeCall2, PinIndex inputPinIndex);
 		
+		void optimize();
+		
 		ScriptRuntime* createRuntime();
 		
 		void addEntryPoint(NodeCall nodeCall);
@@ -31,7 +33,7 @@ class Script
 		void getInputPins(NodeCall nodeCall, PinIndex outputPinIndex, std::vector<Pin>*& pins);
 		void getOutputPin(NodeCall nodeCall, PinIndex inputPinIndex, Pin& pin);
 		
-		#ifndef NDEBUG
+		#ifdef NODESCRIPT_DEBUG
 		bool debugIsNodeCallValid(NodeCall nodeCall) const;
 		#endif
 		
