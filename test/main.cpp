@@ -1,11 +1,4 @@
-#include "scriptengine.h"
-#include "script.h"
-#include "scriptruntime.h"
-
-#include "nodes/initnode.h"
-#include "nodes/testnode.h"
-#include "nodes/constantvaluenode.h"
-#include "nodes/math/addnode.h"
+#include "../src/nodescript.h"
 
 #define NUM_NEW_SCRIPT 100
 #define NUM_EXECS 10000
