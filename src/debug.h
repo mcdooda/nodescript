@@ -37,6 +37,10 @@
 
 #endif // NODESCRIPT_DEBUG
 
+
+#define NODESCRIPT_CT_PRINT(X) namespace { template <int S> struct CtPrint; CtPrint<X> ctprint; }
+
+
 #endif // DEBUG_H
 
 
