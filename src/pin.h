@@ -16,7 +16,7 @@ enum MagicPinIndex : PinIndex
 	FUNCTIONAL_AUTO_EXECUTE_PIN_INDEX = -3
 };
 
-template <int Index_, class ValueType_ = void>
+template <PinIndex Index_, class ValueType_ = void>
 class PinInfo
 {
 	public:

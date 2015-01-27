@@ -13,7 +13,7 @@ class InitNode : public Node
 		NODE(InitNode, "Init");
 		typedef Node Super;
 		
-		enum
+		enum : PinIndex
 		{
 			ImpulseOutIndex
 		};

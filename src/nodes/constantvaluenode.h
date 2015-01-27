@@ -24,7 +24,7 @@ class ConstantValueNode : public FunctionalNode
 		NODE_RUNTIME_TYPE(ConstantValueNodeRuntime<T>);
 		typedef FunctionalNode Super;
 		
-		enum
+		enum : PinIndex
 		{
 			ValueOutIndex
 		};
@@ -92,10 +92,10 @@ class PointerConstantValueNodeRuntime : public ConstantValueNodeRuntime<T*>
 	};
 
 // native pin types
-CONSTANT_VALUE_NODE(BoolConstantValueNode, bool, "Bool Value");
-CONSTANT_VALUE_NODE(IntConstantValueNode, int, "Int Value");
-CONSTANT_VALUE_NODE(LongConstantValueNode, long, "Long Value");
-CONSTANT_VALUE_NODE(FloatConstantValueNode, float, "Float Value");
+CONSTANT_VALUE_NODE(BoolConstantValueNode,   bool,   "Bool Value");
+CONSTANT_VALUE_NODE(IntConstantValueNode,    int,    "Int Value");
+CONSTANT_VALUE_NODE(LongConstantValueNode,   long,   "Long Value");
+CONSTANT_VALUE_NODE(FloatConstantValueNode,  float,  "Float Value");
 CONSTANT_VALUE_NODE(DoubleConstantValueNode, double, "Double Value");
 
 // pointer pin types

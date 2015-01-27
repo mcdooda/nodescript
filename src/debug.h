@@ -7,10 +7,11 @@
 
 #include <cstdio>
 #include <cassert>
+#include <csignal>
 
 
 #define NODESCRIPT_BREAK() \
-	assert(false)
+	raise(SIGTRAP)
 
 #define NODESCRIPT_ASSERT_MSG(cond, format, ...) \
 	if (!(cond)) { fprintf(stderr, "assertion failed: " #cond " ; " format "\n", ##__VA_ARGS__); NODESCRIPT_BREAK(); }

@@ -1,7 +1,7 @@
 #include "../src/nodescript.h"
 
-#define NUM_NEW_SCRIPT 100
-#define NUM_EXECS 10000
+#define NUM_NEW_SCRIPT 1
+#define NUM_EXECS 10
 
 using namespace node;
 
@@ -18,30 +18,36 @@ int main(int argc, char* argv[])
 			Node* testNode = engine.getNodeInstance("Test Node 1");
 			Node* intValueNode = engine.getNodeInstance("Int Value");
 			Node* floatValueNode = engine.getNodeInstance("Float Value");
+			Node* doubleValueNode = engine.getNodeInstance("Double Value");
 			Node* stringValueNode = engine.getNodeInstance("String Value");
+			Node* doubleToIntCastNode = engine.getNodeInstance("Double To Int Cast");
 			Node* mathAddNode = engine.getNodeInstance("Add");
 		
 			NodeCall initCall = script->addNode(initNode);
 			NodeCall intValueCall = script->addNode(intValueNode);
+			NodeCall doubleValueCall = script->addNode(doubleValueNode);
 			NodeCall floatValueCall = script->addNode(floatValueNode);
 			NodeCall stringValueCall = script->addNode(stringValueNode);
 		
 			/*
-			   init +> ==============+
-				                      \
-				                       \
-				             +++++++    +===== <+++++++++++++> ==== <+++++++++++++
-			   int1 +> ---- <+ add +> -------- <+ testnode1 +> ---- <+ testnode2 +
-			   int2 +> ---- <+++++++   +------ <+           +> ---- <+           +
-				                      /  +---- <+++++++++++++> ---- <+++++++++++++
-			  float +> --------------+  /
-				                       /
-			string* +> ---------------+
+			   init +> ======================================+
+			                                                  \
+			                                                   \
+			                                          +++++++   +====== <+++++++++++++> ==== <+++++++++++++
+			    int +> ----------------------------- <+ add +> -------- <+ testnode1 +> ---- <+ testnode2 +
+			 double +> ---- <+ double to int +> ---- <+++++++   +------ <+           +> ---- <+           +
+			                                                   /  +---- <+++++++++++++> ---- <+++++++++++++
+			  float +> ---------------------------------------+  /
+			                                                    /
+			string* +> ----------------------------------------+
 			*/
+			
+			NodeCall doubleToIntCastCall = script->addNode(doubleToIntCastNode);
+			script->addLink(doubleValueCall, DoubleConstantValueNode::ValueOutPin::Index, doubleToIntCastCall, DoubleToIntCastNode::FromValuePin::Index);
 		
 			NodeCall mathAddCall = script->addNode(mathAddNode);
 			script->addLink(intValueCall, IntConstantValueNode::ValueOutPin::Index, mathAddCall, math::AddNode::Int1InPin::Index);
-			script->addLink(intValueCall, IntConstantValueNode::ValueOutPin::Index, mathAddCall, math::AddNode::Int2InPin::Index);
+			script->addLink(doubleToIntCastCall, DoubleToIntCastNode::ToValuePin::Index, mathAddCall, math::AddNode::Int2InPin::Index);
 		
 			NodeCall testNodeCall1 = script->addNode(testNode);
 			script->addLink(initCall, InitNode::ImpulseOutPin::Index, testNodeCall1, TestNode::ImpulseInPin::Index);
@@ -63,6 +69,9 @@ int main(int argc, char* argv[])
 			
 				ConstantValueNodeRuntime<int>* intConstantValueNodeRuntime = scriptRuntime->getNodeCallRuntime<ConstantValueNodeRuntime<int>>(intValueCall);
 				intConstantValueNodeRuntime->setValue(j);
+				
+				ConstantValueNodeRuntime<double>* doubleConstantValueNodeRuntime = scriptRuntime->getNodeCallRuntime<ConstantValueNodeRuntime<double>>(doubleValueCall);
+				doubleConstantValueNodeRuntime->setValue(3.14);
 			
 				ConstantValueNodeRuntime<float>* floatConstantValueNodeRuntime = scriptRuntime->getNodeCallRuntime<ConstantValueNodeRuntime<float>>(floatValueCall);
 				floatConstantValueNodeRuntime->setValue(static_cast<float>(j) / 2);

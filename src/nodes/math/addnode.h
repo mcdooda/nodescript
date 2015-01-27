@@ -13,7 +13,7 @@ class AddNode : public FunctionalNode
 	public:
 		NODE(AddNode, "Add");
 		
-		enum
+		enum : PinIndex
 		{
 			Int1InIndex,
 			Int2InIndex,

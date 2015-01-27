@@ -27,8 +27,12 @@ NodeCall Script::addNode(Node* node)
 
 void Script::addLink(NodeCall nodeCall1, PinIndex outputPinIndex, NodeCall nodeCall2, PinIndex inputPinIndex)
 {
-	NODESCRIPT_ASSERT(isLinkValid(nodeCall1, outputPinIndex, nodeCall2, inputPinIndex));
-	
+	NODESCRIPT_ASSERT_MSG(
+		isLinkValid(nodeCall1, outputPinIndex, nodeCall2, inputPinIndex),
+		"Trying to add a link from a pin of type \"%s\" to \"%s\"",
+		getNode(nodeCall1)->debugGetPinType(outputPinIndex),
+		getNode(nodeCall2)->debugGetPinType(inputPinIndex)
+	);
 	m_outputPins[nodeCall1][outputPinIndex].emplace_back(nodeCall2, inputPinIndex);
 	m_inputPins[nodeCall2].emplace(std::piecewise_construct, std::forward_as_tuple(inputPinIndex), std::forward_as_tuple(nodeCall1, outputPinIndex));
 }

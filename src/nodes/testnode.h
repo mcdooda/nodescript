@@ -12,7 +12,7 @@ class TestNode : public Node
 		NODE(TestNode, "Test Node 1");
 		typedef Node Super;
 		
-		enum
+		enum : PinIndex
 		{
 			IntInIndex,
 			FloatInIndex,
@@ -24,15 +24,15 @@ class TestNode : public Node
 			ImpulseOutIndex
 		};
 		
-		typedef PinInfo<IntInIndex, int> IntInPin;
-		typedef PinInfo<FloatInIndex, float> FloatInPin;
-		typedef PinInfo<StringInIndex, std::string*> StringInPin;
-		typedef PinInfo<ImpulseInIndex> ImpulseInPin;
+		typedef PinInfo<IntInIndex,     int         > IntInPin;
+		typedef PinInfo<FloatInIndex,   float       > FloatInPin;
+		typedef PinInfo<StringInIndex,  std::string*> StringInPin;
+		typedef PinInfo<ImpulseInIndex              > ImpulseInPin;
 		
-		typedef PinInfo<IntOutIndex, int> IntOutPin;
-		typedef PinInfo<FloatOutIndex, float> FloatOutPin;
+		typedef PinInfo<IntOutIndex,    int         > IntOutPin;
+		typedef PinInfo<FloatOutIndex,  float       > FloatOutPin;
 		typedef PinInfo<StringOutIndex, std::string*> StringOutPin;
-		typedef PinInfo<ImpulseOutIndex> ImpulseOutPin;
+		typedef PinInfo<ImpulseOutIndex             > ImpulseOutPin;
 		
 	public:
 		TestNode();

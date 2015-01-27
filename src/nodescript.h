@@ -8,6 +8,7 @@
 #include "nodes/initnode.h"
 #include "nodes/testnode.h"
 #include "nodes/constantvaluenode.h"
+#include "nodes/castnode.h"
 #include "nodes/math/addnode.h"
 
 #endif // NODESCRIPT_H

@@ -4,6 +4,7 @@
 #include "nodes/initnode.h"
 #include "nodes/testnode.h"
 #include "nodes/constantvaluenode.h"
+#include "nodes/castnode.h"
 #include "nodes/math/addnode.h"
 
 ScriptEngine::ScriptEngine()
@@ -41,14 +42,37 @@ Node* ScriptEngine::getNodeInstance(const std::string& nodeName)
 
 void ScriptEngine::registerNodes()
 {
+	// core
 	registerNode<node::InitNode>();
 	registerNode<node::TestNode>();
+	
+	// constants
 	registerNode<node::BoolConstantValueNode>();
 	registerNode<node::IntConstantValueNode>();
 	registerNode<node::LongConstantValueNode>();
 	registerNode<node::FloatConstantValueNode>();
 	registerNode<node::DoubleConstantValueNode>();
 	registerNode<node::StringConstantValueNode>();
+	
+	// cast
+	registerNode<node::BoolToIntCastNode>();
+	registerNode<node::BoolToLongCastNode>();
+	registerNode<node::IntToBoolCastNode>();
+	registerNode<node::IntToLongCastNode>();
+	registerNode<node::IntToFloatCastNode>();
+	registerNode<node::IntToDoubleCastNode>();
+	registerNode<node::LongToBoolCastNode>();
+	registerNode<node::LongToIntCastNode>();
+	registerNode<node::LongToFloatCastNode>();
+	registerNode<node::LongToDoubleCastNode>();
+	registerNode<node::FloatToIntCastNode>();
+	registerNode<node::FloatToLongCastNode>();
+	registerNode<node::FloatToDoubleCastNode>();
+	registerNode<node::DoubleToIntCastNode>();
+	registerNode<node::DoubleToLongCastNode>();
+	registerNode<node::DoubleToFloatCastNode>();
+	
+	// math
 	registerNode<node::math::AddNode>();
 }
 
