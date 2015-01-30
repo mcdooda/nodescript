@@ -28,9 +28,15 @@ void Node::optimize()
 	m_pinTypeIds.shrink_to_fit();
 	#ifdef NODESCRIPT_DEBUG
 	gain -= m_pinTypeIds.capacity() * sizeof(PinTypeId);
-	#ifdef NODESCRIPT_VERBOSE
-	std::cerr << "[node " << debugGetNodeName() << "] we won " << gain << " bytes" << std::endl;
+	gain += m_inputPinDefaultValues.capacity() * sizeof(PinValue);
 	#endif
+	m_inputPinDefaultValues.shrink_to_fit();
+	#ifdef NODESCRIPT_DEBUG
+	gain -= m_inputPinDefaultValues.capacity() * sizeof(PinValue);
+	#endif
+	
+	#if defined(NODESCRIPT_VERBOSE) && defined(NODESCRIPT_DEBUG)
+	std::cerr << "[node " << debugGetNodeName() << "] we won " << gain << " bytes" << std::endl;
 	#endif
 }
 
@@ -110,5 +116,9 @@ void Node::debugPrintPins() const
 }
 #endif
 
+int Node::getInputValueIndexFromPinIndex(PinIndex pinIndex) const
+{
+	return pinIndex - m_firstInValuePinIndex;
+}
 
 

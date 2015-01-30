@@ -77,7 +77,7 @@ void NodeRuntime::createInputValues()
 		memset(m_inputRuntimes, 0, sizeof(NodeRuntime*) * numValues);
 		
 		m_inputValues = new PinValue*[numValues];
-		memset(m_inputValues, 0, sizeof(PinValue*) * numValues);
+		memcpy(m_inputValues, m_node->m_inputPinDefaultValues.data(), sizeof(PinValue) * numValues);
 	}
 }
 

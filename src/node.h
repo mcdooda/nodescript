@@ -3,6 +3,7 @@
 
 #include <vector>
 #include <string>
+#include <cstring>
 #include "pin.h"
 #include "noderuntime.h"
 #include "script.h"
@@ -78,6 +79,19 @@ class Node
 				m_firstInValuePinIndex = T::Index;
 			}
 			m_lastInValuePinIndex = T::Index;
+			
+			PinValue defaultPinValue;
+			memset(&defaultPinValue, 0, sizeof(PinValue));
+			m_inputPinDefaultValues.push_back(defaultPinValue);
+		}
+		
+		template <class T>
+		void inValuePin(typename T::ValueType& defaultValue)
+		{
+			inValuePin<T>();
+			NODESCRIPT_ASSERT(debugIsInputValuePinIndexValid(T::Index));
+			int index = getInputValueIndexFromPinIndex(T::Index);
+			writePinValue(m_inputPinDefaultValues[index], defaultValue);
 		}
 		
 		template <class T>
@@ -146,6 +160,10 @@ class Node
 			NODESCRIPT_ASSERT(m_pinTypeIds[T::Index] == PIN_TYPE_IMPULSE_ID);
 			runtime->impulse<T>();
 		}
+		
+		int getInputValueIndexFromPinIndex(PinIndex pinIndex) const;
+		
+		std::vector<PinValue> m_inputPinDefaultValues;
 		
 		std::vector<PinTypeId> m_pinTypeIds;
 		
