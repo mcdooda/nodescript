@@ -23,9 +23,11 @@ class InitNode : public Node
 	public:
 		InitNode();
 		void execute(NodeRuntime* runtime, PinIndex inputPinIndex) const override;
-		const char* getPinName(PinIndex pinIndex) const override;
 		void addedToScript(Script* script, NodeCall nodeCall) const override;
-		
+
+#if defined(NODESCRIPT_DEBUG) || defined(NODESCRIPT_INTROSPECTION)
+		const char* getPinName(PinIndex pinIndex) const override;
+#endif
 }; // TestNode
 
 } // node

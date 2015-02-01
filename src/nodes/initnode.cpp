@@ -15,6 +15,12 @@ void InitNode::execute(NodeRuntime* runtime, PinIndex inputPinIndex) const
 	impulse<ImpulseOutPin>(runtime);
 }
 
+void InitNode::addedToScript(Script* script, NodeCall nodeCall) const
+{
+	script->addEntryPoint(nodeCall);
+}
+
+#if defined(NODESCRIPT_DEBUG) || defined(NODESCRIPT_INTROSPECTION)
 const char* InitNode::getPinName(PinIndex pinIndex) const
 {
 	switch (pinIndex)
@@ -23,11 +29,7 @@ const char* InitNode::getPinName(PinIndex pinIndex) const
 		default: return Super::getPinName(pinIndex); break;
 	}
 }
-
-void InitNode::addedToScript(Script* script, NodeCall nodeCall) const
-{
-	script->addEntryPoint(nodeCall);
-}
+#endif
 
 } // node
 

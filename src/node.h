@@ -7,6 +7,7 @@
 #include "pin.h"
 #include "noderuntime.h"
 #include "script.h"
+#include "pinarchetype.h"
 
 class NodeRuntime;
 class ScriptRuntime;
@@ -14,10 +15,10 @@ class ScriptRuntime;
 #define NODE_FACTORY(NodeConstructor) \
 	static Node* factory() { return NodeConstructor; } \
 
-#ifdef NODESCRIPT_DEBUG
+#if defined(NODESCRIPT_DEBUG) || defined(NODESCRIPT_INTROSPECTION)
 #define NODE_NAME(NodeName) \
 	static const char* nodeName() { return NodeName; } \
-	const char* debugGetNodeName() const override { return NodeName; }
+	const char* getNodeName() const override { return NodeName; }
 #else
 #define NODE_NAME(NodeName) \
 	static const char* nodeName() { return NodeName; }
@@ -41,10 +42,10 @@ class Node
 		
 		void optimize();
 		
-		#ifdef NODESCRIPT_DEBUG
-		virtual const char* debugGetNodeName() const;
-		#endif
+		#if defined(NODESCRIPT_DEBUG) || defined(NODESCRIPT_INTROSPECTION)
+		virtual const char* getNodeName() const;
 		virtual const char* getPinName(PinIndex pinIndex) const;
+		#endif
 		PinTypeId getPinTypeId(PinIndex pinIndex) const;
 		
 		virtual void execute(NodeRuntime* runtime, PinIndex inputPinIndex) const = 0;
@@ -61,6 +62,10 @@ class Node
 		bool debugIsOutputImpulsePinIndexValid(PinIndex pinIndex) const;
 		const char* debugGetPinType(PinIndex pinIndex) const;
 		void debugPrintPins() const;
+		#endif
+		
+		#ifdef NODESCRIPT_INTROSPECTION
+		PinArchetype getPinArchetype(PinIndex pinIndex) const;
 		#endif
 		
 	protected:

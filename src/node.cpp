@@ -36,22 +36,23 @@ void Node::optimize()
 	#endif
 	
 	#if defined(NODESCRIPT_VERBOSE) && defined(NODESCRIPT_DEBUG)
-	std::cerr << "[node " << debugGetNodeName() << "] we won " << gain << " bytes" << std::endl;
+	std::cerr << "[node " << getNodeName() << "] we won " << gain << " bytes" << std::endl;
 	#endif
 }
 
-#ifdef NODESCRIPT_DEBUG
-const char* Node::debugGetNodeName() const
+#if defined(NODESCRIPT_DEBUG) || defined(NODESCRIPT_INTROSPECTION)
+const char* Node::getNodeName() const
 {
 	NODESCRIPT_ASSERT_MSG(false, "Node \"%s\" misses a name!", typeid(*this).name());
 	return "<Unnamed node>";
 }
-#endif
 
 const char* Node::getPinName(PinIndex pinIndex) const
 {
+	NODESCRIPT_ASSERT_MSG(false, "Node \"%s\" pin #%d misses a name!", getNodeName(), pinIndex);
 	return "<Unknown pin name>";
 }
+#endif
 
 PinTypeId Node::getPinTypeId(PinIndex pinIndex) const
 {
@@ -106,13 +107,24 @@ const char* Node::debugGetPinType(PinIndex pinIndex) const
 
 void Node::debugPrintPins() const
 {
-	std::cerr << "Node: " << debugGetNodeName() << std::endl;
+	std::cerr << "Node: " << getNodeName() << std::endl;
 	int numPins = static_cast<int>(m_pinTypeIds.size());
 	for (PinIndex pinIndex = 0; pinIndex < numPins; ++pinIndex)
 	{
 		std::cerr << "pin#" << pinIndex << " \"" << getPinName(pinIndex) << "\": " << debugGetPinType(pinIndex) << std::endl;
 	}
 	std::cerr << std::endl;
+}
+#endif
+
+#ifdef NODESCRIPT_INTROSPECTION
+PinArchetype Node::getPinArchetype(PinIndex pinIndex) const
+{
+	if (debugIsInputValuePinIndexValid(pinIndex))         return PinArchetype::INPUT_VALUE;
+	else if (debugIsInputImpulsePinIndexValid(pinIndex))  return PinArchetype::INPUT_IMPULSE;
+	else if (debugIsOutputValuePinIndexValid(pinIndex))   return PinArchetype::OUTPUT_VALUE;
+	else if (debugIsOutputImpulsePinIndexValid(pinIndex)) return PinArchetype::OUTPUT_IMPULSE;
+	else                                                  return PinArchetype::INVALID;
 }
 #endif
 

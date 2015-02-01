@@ -37,7 +37,10 @@ class TestNode : public Node
 	public:
 		TestNode();
 		void execute(NodeRuntime* runtime, PinIndex inputPinIndex) const override;
+
+#if defined(NODESCRIPT_DEBUG) || defined(NODESCRIPT_INTROSPECTION)
 		const char* getPinName(PinIndex pinIndex) const override;
+#endif
 }; // TestNode
 
 } // node

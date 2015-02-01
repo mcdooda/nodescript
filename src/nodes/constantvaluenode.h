@@ -39,6 +39,7 @@ class ConstantValueNode : public FunctionalNode
 		
 		void execute(NodeRuntime* runtime) const override {}
 		
+#if defined(NODESCRIPT_DEBUG) || defined(NODESCRIPT_INTROSPECTION)
 		const char* getPinName(PinIndex pinIndex) const override
 		{
 			switch (pinIndex)
@@ -47,6 +48,7 @@ class ConstantValueNode : public FunctionalNode
 				default: return Super::getPinName(pinIndex); break;
 			}
 		}
+#endif
 };
 
 template <class T>

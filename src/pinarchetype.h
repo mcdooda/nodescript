@@ -1,0 +1,20 @@
+#ifndef PINARCHETYPE_H
+#define PINARCHETYPE_H
+
+#ifdef NODESCRIPT_INTROSPECTION
+
+enum PinArchetype : int8_t
+{
+	INVALID,
+	INPUT_VALUE,
+	INPUT_IMPULSE,
+	OUTPUT_VALUE,
+	OUTPUT_IMPULSE
+};
+
+#endif
+
+#endif // PINARCHETYPE_H
+
+
+

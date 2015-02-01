@@ -1,3 +1,5 @@
+#include <algorithm>
+
 #include "scriptengine.h"
 #include "script.h"
 
@@ -21,6 +23,14 @@ Script* ScriptEngine::newScript()
 {
 	return new Script();
 }
+
+#ifdef NODESCRIPT_INTROSPECTION
+const std::map<std::string, Node*>& ScriptEngine::getAllRegisteredNodes()
+{
+	instantiateAllNodes();
+	return m_nodes;
+}
+#endif
 
 Node* ScriptEngine::getNodeInstance(const std::string& nodeName)
 {
@@ -75,6 +85,17 @@ void ScriptEngine::registerNodes()
 	// math
 	registerNode<node::math::AddNode>();
 }
+
+#ifdef NODESCRIPT_INTROSPECTION
+void ScriptEngine::instantiateAllNodes()
+{
+	std::for_each(
+		m_nodeFactories.begin(),
+		m_nodeFactories.end(),
+		[this](const std::pair<std::string, NodeFactory>& pair) { getNodeInstance(pair.first); }
+	);
+}
+#endif
 
 
 

@@ -34,6 +34,7 @@ void TestNode::execute(NodeRuntime* runtime, PinIndex inputPinIndex) const
 	impulse<ImpulseOutPin>(runtime);
 }
 
+#if defined(NODESCRIPT_DEBUG) || defined(NODESCRIPT_INTROSPECTION)
 const char* TestNode::getPinName(PinIndex pinIndex) const
 {
 	switch (pinIndex)
@@ -49,6 +50,7 @@ const char* TestNode::getPinName(PinIndex pinIndex) const
 		default: return Super::getPinName(pinIndex); break;
 	}
 }
+#endif
 
 } // node
 

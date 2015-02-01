@@ -15,7 +15,7 @@ Script::~Script()
 NodeCall Script::addNode(Node* node)
 {
 	#ifdef NODESCRIPT_DEBUG
-	node->debugGetNodeName(); // ensures a name is given to the actual node type
+	node->getNodeName(); // ensures a name is given to the actual node type
 	#endif
 	m_nodes.push_back(node);
 	NodeCall nodeCall = m_nodes.size() - 1;

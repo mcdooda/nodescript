@@ -35,7 +35,8 @@ class CastNode : public FunctionalNode
 			readPin<FromValuePin>(runtime, fromValue);
 			writePin<ToValuePin>(runtime, static_cast<ToType>(fromValue));
 		}
-		
+
+#if defined(NODESCRIPT_DEBUG) || defined(NODESCRIPT_INTROSPECTION)
 		const char* getPinName(PinIndex pinIndex) const override
 		{
 			switch (pinIndex)
@@ -45,6 +46,7 @@ class CastNode : public FunctionalNode
 				default: return Super::getPinName(pinIndex); break;
 			}
 		}
+#endif
 };
 
 #define CAST_NODE(NodeType, NodeName, FromType, ToType) \

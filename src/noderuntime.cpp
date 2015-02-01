@@ -132,10 +132,10 @@ void NodeRuntime::optimizeInputValueLinks(ScriptRuntime* scriptRuntime)
 		}
 		if (!inputRuntime->debugIsOutputValuePinIndexValid(outputPin.getIndex()))
 		{
-			std::cerr << m_node->debugGetNodeName()
+			std::cerr << m_node->getNodeName()
 			          << " pin#" << static_cast<int>(pinIndex)
 			          << " (" << m_node->debugGetPinType(pinIndex) << ")"
-			          << " and " << inputRuntime->m_node->debugGetNodeName()
+			          << " and " << inputRuntime->m_node->getNodeName()
 			          << " pin#" << static_cast<int>(outputPin.getIndex())
 			          << " (" << inputRuntime->m_node->debugGetPinType(pinIndex) << ")"
 			          << " are not compatible pins!" << std::endl;

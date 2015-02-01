@@ -20,7 +20,7 @@ template <PinIndex Index_, class ValueType_ = void>
 class PinInfo
 {
 	public:
-		enum { Index = Index_ };
+		enum : PinIndex { Index = Index_ };
 		typedef ValueType_ ValueType;
 };
 

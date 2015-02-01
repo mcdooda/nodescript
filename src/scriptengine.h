@@ -18,6 +18,10 @@ class ScriptEngine
 		
 		Script* newScript();
 		
+		#ifdef NODESCRIPT_INTROSPECTION
+		const std::map<std::string, Node*>& getAllRegisteredNodes();
+		#endif
+		
 	private:
 		void registerNodes();
 		
@@ -26,6 +30,10 @@ class ScriptEngine
 		{
 			m_nodeFactories[T::nodeName()] = T::factory;
 		}
+		
+		#ifdef NODESCRIPT_INTROSPECTION
+		void instantiateAllNodes();
+		#endif
 		
 		std::map<std::string, Node*> m_nodes;
 		std::map<std::string, NodeFactory> m_nodeFactories;
