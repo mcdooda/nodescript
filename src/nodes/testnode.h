@@ -8,9 +8,9 @@ namespace node
 
 class TestNode : public Node
 {
+	typedef Node Super;
 	public:
 		NODE(TestNode, "Test Node 1");
-		typedef Node Super;
 		
 		enum : PinIndex
 		{

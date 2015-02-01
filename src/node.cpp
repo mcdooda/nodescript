@@ -56,7 +56,7 @@ const char* Node::getPinName(PinIndex pinIndex) const
 
 PinTypeId Node::getPinTypeId(PinIndex pinIndex) const
 {
-	NODESCRIPT_ASSERT(debugIsPinIndexValid(pinIndex));
+    NODESCRIPT_ASSERT(isPinIndexValid(pinIndex));
 	return m_pinTypeIds[pinIndex];
 }
 
@@ -65,32 +65,34 @@ NodeRuntime* Node::createRuntime(ScriptRuntime* scriptRuntime, NodeCall nodeCall
 	return new NodeRuntime(this, nodeCall);
 }
 
-#ifdef NODESCRIPT_DEBUG
-bool Node::debugIsPinIndexValid(PinIndex pinIndex) const
+#if defined(NODESCRIPT_DEBUG) || defined(NODESCRIPT_INTROSPECTION)
+bool Node::isPinIndexValid(PinIndex pinIndex) const
 {
 	return pinIndex >= 0 && pinIndex < static_cast<int>(m_pinTypeIds.size());
 }
 
-bool Node::debugIsInputValuePinIndexValid(PinIndex pinIndex) const
+bool Node::isInputValuePinIndexValid(PinIndex pinIndex) const
 {
 	return pinIndex >= m_firstInValuePinIndex && pinIndex <= m_lastInValuePinIndex;
 }
 
-bool Node::debugIsInputImpulsePinIndexValid(PinIndex pinIndex) const
+bool Node::isInputImpulsePinIndexValid(PinIndex pinIndex) const
 {
 	return pinIndex >= m_firstInImpulsePinIndex && pinIndex <= m_lastInImpulsePinIndex;
 }
 
-bool Node::debugIsOutputValuePinIndexValid(PinIndex pinIndex) const
+bool Node::isOutputValuePinIndexValid(PinIndex pinIndex) const
 {
 	return pinIndex >= m_firstOutValuePinIndex && pinIndex <= m_lastOutValuePinIndex;
 }
 
-bool Node::debugIsOutputImpulsePinIndexValid(PinIndex pinIndex) const
+bool Node::isOutputImpulsePinIndexValid(PinIndex pinIndex) const
 {
 	return pinIndex >= m_firstOutImpulsePinIndex && pinIndex <= m_lastOutImpulsePinIndex;
 }
+#endif
 
+#ifdef NODESCRIPT_DEBUG
 const char* Node::debugGetPinType(PinIndex pinIndex) const
 {
 	if      (pinIndex == INVALID_PIN_INDEX_MIN_1)           return "Invalid Pin Index Min 1";
@@ -98,10 +100,10 @@ const char* Node::debugGetPinType(PinIndex pinIndex) const
 	else if (pinIndex == INVALID_PIN_INDEX)                 return "Invalid Pin Index";
 	else if (pinIndex == ENTRY_POINT_PIN_INDEX)             return "Entry Point";
 	else if (pinIndex == FUNCTIONAL_AUTO_EXECUTE_PIN_INDEX) return "Functional Auto Execute";
-	else if (debugIsInputValuePinIndexValid(pinIndex))      return "Input Value";
-	else if (debugIsInputImpulsePinIndexValid(pinIndex))    return "Input Impulse";
-	else if (debugIsOutputValuePinIndexValid(pinIndex))     return "Output Value";
-	else if (debugIsOutputImpulsePinIndexValid(pinIndex))   return "Output Impulse";
+    else if (isInputValuePinIndexValid(pinIndex))      return "Input Value";
+    else if (isInputImpulsePinIndexValid(pinIndex))    return "Input Impulse";
+    else if (isOutputValuePinIndexValid(pinIndex))     return "Output Value";
+    else if (isOutputImpulsePinIndexValid(pinIndex))   return "Output Impulse";
 	else                                                    return "Unknown Pin Index";
 }
 
@@ -120,11 +122,16 @@ void Node::debugPrintPins() const
 #ifdef NODESCRIPT_INTROSPECTION
 PinArchetype Node::getPinArchetype(PinIndex pinIndex) const
 {
-	if (debugIsInputValuePinIndexValid(pinIndex))         return PinArchetype::INPUT_VALUE;
-	else if (debugIsInputImpulsePinIndexValid(pinIndex))  return PinArchetype::INPUT_IMPULSE;
-	else if (debugIsOutputValuePinIndexValid(pinIndex))   return PinArchetype::OUTPUT_VALUE;
-	else if (debugIsOutputImpulsePinIndexValid(pinIndex)) return PinArchetype::OUTPUT_IMPULSE;
+    if (isInputValuePinIndexValid(pinIndex))         return PinArchetype::INPUT_VALUE;
+    else if (isInputImpulsePinIndexValid(pinIndex))  return PinArchetype::INPUT_IMPULSE;
+    else if (isOutputValuePinIndexValid(pinIndex))   return PinArchetype::OUTPUT_VALUE;
+    else if (isOutputImpulsePinIndexValid(pinIndex)) return PinArchetype::OUTPUT_IMPULSE;
 	else                                                  return PinArchetype::INVALID;
+}
+
+int Node::getNumPins() const
+{
+    return static_cast<int>(m_pinTypeIds.size());
 }
 #endif
 

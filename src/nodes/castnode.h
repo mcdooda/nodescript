@@ -7,8 +7,8 @@ namespace node
 template <class FromType, class ToType>
 class CastNode : public FunctionalNode
 {
+	typedef FunctionalNode Super;
 	public:
-		typedef FunctionalNode Super;
 		
 		enum : PinIndex
 		{
@@ -36,7 +36,7 @@ class CastNode : public FunctionalNode
 			writePin<ToValuePin>(runtime, static_cast<ToType>(fromValue));
 		}
 
-#if defined(NODESCRIPT_DEBUG) || defined(NODESCRIPT_INTROSPECTION)
+		#if defined(NODESCRIPT_DEBUG) || defined(NODESCRIPT_INTROSPECTION)
 		const char* getPinName(PinIndex pinIndex) const override
 		{
 			switch (pinIndex)
@@ -46,7 +46,7 @@ class CastNode : public FunctionalNode
 				default: return Super::getPinName(pinIndex); break;
 			}
 		}
-#endif
+		#endif
 };
 
 #define CAST_NODE(NodeType, NodeName, FromType, ToType) \
@@ -57,29 +57,29 @@ class CastNode : public FunctionalNode
 	};
 	
 // bool
-CAST_NODE(BoolToIntCastNode,     "Bool To Int Cast",      bool,  int);
-CAST_NODE(BoolToLongCastNode,    "Bool To Long Cast",     bool,  long);
+CAST_NODE(BoolToIntCastNode,     "Bool To Int Cast",     bool,  int);
+CAST_NODE(BoolToLongCastNode,    "Bool To Long Cast",    bool,  long);
 
 // int
-CAST_NODE(IntToBoolCastNode,     "Int To Bool Cast",      int,   bool);
-CAST_NODE(IntToLongCastNode,     "Int To Long Cast",      int,   long);
-CAST_NODE(IntToFloatCastNode,    "Int To Float Cast",     int,   float);
-CAST_NODE(IntToDoubleCastNode,   "Int To Double Cast",    int,   double);
+CAST_NODE(IntToBoolCastNode,     "Int To Bool Cast",     int,   bool);
+CAST_NODE(IntToLongCastNode,     "Int To Long Cast",     int,   long);
+CAST_NODE(IntToFloatCastNode,    "Int To Float Cast",    int,   float);
+CAST_NODE(IntToDoubleCastNode,   "Int To Double Cast",   int,   double);
 
 // long
-CAST_NODE(LongToBoolCastNode,    "Long To Bool Cast",     long,  bool);
-CAST_NODE(LongToIntCastNode,     "Long To Int Cast",      long,  int);
-CAST_NODE(LongToFloatCastNode,   "Long To Float Cast",    long,  float);
-CAST_NODE(LongToDoubleCastNode,  "Long To Double Cast",   long,  double);
+CAST_NODE(LongToBoolCastNode,    "Long To Bool Cast",    long,  bool);
+CAST_NODE(LongToIntCastNode,     "Long To Int Cast",     long,  int);
+CAST_NODE(LongToFloatCastNode,   "Long To Float Cast",   long,  float);
+CAST_NODE(LongToDoubleCastNode,  "Long To Double Cast",  long,  double);
 
 // float
-CAST_NODE(FloatToIntCastNode,    "Float To Int Cast",     float, int);
-CAST_NODE(FloatToLongCastNode,   "Float To Long Cast",    float, long);
-CAST_NODE(FloatToDoubleCastNode, "Float To Double Cast",  float, double);
+CAST_NODE(FloatToIntCastNode,    "Float To Int Cast",    float, int);
+CAST_NODE(FloatToLongCastNode,   "Float To Long Cast",   float, long);
+CAST_NODE(FloatToDoubleCastNode, "Float To Double Cast", float, double);
 
 // double
-CAST_NODE(DoubleToIntCastNode,   "Double To Int Cast",    double, int);
-CAST_NODE(DoubleToLongCastNode,  "Double To Long Cast",   double, long);
+CAST_NODE(DoubleToIntCastNode,   "Double To Int Cast",   double, int);
+CAST_NODE(DoubleToLongCastNode,  "Double To Long Cast",  double, long);
 CAST_NODE(DoubleToFloatCastNode, "Double To Float Cast", double, float);
 
 } // node

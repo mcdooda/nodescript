@@ -20,9 +20,9 @@ class ConstantValueNodeRuntime : public FunctionalNodeRuntime
 template <class T>
 class ConstantValueNode : public FunctionalNode
 {
+	typedef FunctionalNode Super;
 	public:
 		NODE_RUNTIME_TYPE(ConstantValueNodeRuntime<T>);
-		typedef FunctionalNode Super;
 		
 		enum : PinIndex
 		{
@@ -39,7 +39,7 @@ class ConstantValueNode : public FunctionalNode
 		
 		void execute(NodeRuntime* runtime) const override {}
 		
-#if defined(NODESCRIPT_DEBUG) || defined(NODESCRIPT_INTROSPECTION)
+		#if defined(NODESCRIPT_DEBUG) || defined(NODESCRIPT_INTROSPECTION)
 		const char* getPinName(PinIndex pinIndex) const override
 		{
 			switch (pinIndex)
@@ -48,7 +48,7 @@ class ConstantValueNode : public FunctionalNode
 				default: return Super::getPinName(pinIndex); break;
 			}
 		}
-#endif
+		#endif
 };
 
 template <class T>

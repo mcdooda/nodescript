@@ -10,6 +10,7 @@ namespace math
 
 class AddNode : public FunctionalNode
 {
+	typedef FunctionalNode Super;
 	public:
 		NODE(AddNode, "Add");
 		
@@ -29,6 +30,9 @@ class AddNode : public FunctionalNode
 	public:
 		AddNode();
 		void execute(NodeRuntime* runtime) const override;
+		#if defined(NODESCRIPT_DEBUG) || defined(NODESCRIPT_INTROSPECTION)
+		const char* getPinName(PinIndex pinIndex) const override;
+		#endif
 };
 
 } // math

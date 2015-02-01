@@ -44,22 +44,22 @@ void NodeRuntime::optimizeLinks(ScriptRuntime* scriptRuntime)
 #ifdef NODESCRIPT_DEBUG
 bool NodeRuntime::debugIsInputValuePinIndexValid(PinIndex pinIndex) const
 {
-	return m_node->debugIsInputValuePinIndexValid(pinIndex);
+	return m_node->isInputValuePinIndexValid(pinIndex);
 }
 
 bool NodeRuntime::debugIsInputImpulsePinIndexValid(PinIndex pinIndex) const
 {
-	return m_node->debugIsInputImpulsePinIndexValid(pinIndex);
+	return m_node->isInputImpulsePinIndexValid(pinIndex);
 }
 
 bool NodeRuntime::debugIsOutputValuePinIndexValid(PinIndex pinIndex) const
 {
-	return m_node->debugIsOutputValuePinIndexValid(pinIndex);
+	return m_node->isOutputValuePinIndexValid(pinIndex);
 }
 
 bool NodeRuntime::debugIsOutputImpulsePinIndexValid(PinIndex pinIndex) const
 {
-	return m_node->debugIsOutputImpulsePinIndexValid(pinIndex);
+	return m_node->isOutputImpulsePinIndexValid(pinIndex);
 }
 
 const char* NodeRuntime::debugGetPinType(PinIndex pinIndex) const
