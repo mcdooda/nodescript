@@ -54,22 +54,22 @@ class Node
 		
 		virtual NodeRuntime* createRuntime(ScriptRuntime* scriptRuntime, NodeCall nodeCall) const;
 		
-        #if defined(NODESCRIPT_DEBUG) || defined(NODESCRIPT_INTROSPECTION)
-        bool isPinIndexValid(PinIndex pinIndex) const;
-        bool isInputValuePinIndexValid(PinIndex pinIndex) const;
-        bool isInputImpulsePinIndexValid(PinIndex pinIndex) const;
-        bool isOutputValuePinIndexValid(PinIndex pinIndex) const;
-        bool isOutputImpulsePinIndexValid(PinIndex pinIndex) const;
-        #endif
+		#if defined(NODESCRIPT_DEBUG) || defined(NODESCRIPT_INTROSPECTION)
+		bool isPinIndexValid(PinIndex pinIndex) const;
+		bool isInputValuePinIndexValid(PinIndex pinIndex) const;
+		bool isInputImpulsePinIndexValid(PinIndex pinIndex) const;
+		bool isOutputValuePinIndexValid(PinIndex pinIndex) const;
+		bool isOutputImpulsePinIndexValid(PinIndex pinIndex) const;
+		#endif
 
-        #ifdef NODESCRIPT_DEBUG
+		#ifdef NODESCRIPT_DEBUG
 		const char* debugGetPinType(PinIndex pinIndex) const;
 		void debugPrintPins() const;
 		#endif
 		
 		#ifdef NODESCRIPT_INTROSPECTION
 		PinArchetype getPinArchetype(PinIndex pinIndex) const;
-        int getNumPins() const;
+		int getNumPins() const;
 		#endif
 		
 	protected:
@@ -98,7 +98,7 @@ class Node
 		void inValuePin(typename T::ValueType& defaultValue)
 		{
 			inValuePin<T>();
-            NODESCRIPT_ASSERT(isInputValuePinIndexValid(T::Index));
+			NODESCRIPT_ASSERT(isInputValuePinIndexValid(T::Index));
 			int index = getInputValueIndexFromPinIndex(T::Index);
 			writePinValue(m_inputPinDefaultValues[index], defaultValue);
 		}
