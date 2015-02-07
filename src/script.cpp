@@ -44,7 +44,7 @@ bool Script::isLinkValid(NodeCall nodeCall1, PinIndex outputPinIndex, NodeCall n
 	
 	Node* node1 = getNode(nodeCall1);
 	Node* node2 = getNode(nodeCall2);
-	return node1 != node2 && node1->getPinTypeId(outputPinIndex) == node2->getPinTypeId(inputPinIndex);
+	return nodeCall1 != nodeCall2 && node1->getPinTypeId(outputPinIndex) == node2->getPinTypeId(inputPinIndex);
 }
 
 void Script::optimize()
