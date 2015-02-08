@@ -37,6 +37,8 @@ class Pin
 		
 		// returns whether the pin may be connected, can return true with invalid pins
 		inline bool isConnected() const { return m_nodeCall != INVALID_NODE_CALL || m_index != INVALID_PIN_INDEX; }
+
+		inline bool operator==(const Pin& pin) { return m_nodeCall == pin.m_nodeCall && m_index == pin.m_index; }
 		
 	private:
 		NodeCall m_nodeCall;

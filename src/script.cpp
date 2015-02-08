@@ -1,6 +1,7 @@
 #include "script.h"
 #include "node.h"
 #include "scriptruntime.h"
+#include <algorithm>
 
 Script::Script()
 {
@@ -46,6 +47,27 @@ bool Script::isLinkValid(NodeCall nodeCall1, PinIndex outputPinIndex, NodeCall n
 	Node* node2 = getNode(nodeCall2);
 	return nodeCall1 != nodeCall2 && node1->getPinTypeId(outputPinIndex) == node2->getPinTypeId(inputPinIndex);
 }
+
+#ifdef NODESCRIPT_INTROSPECTION
+void Script::removeLink(NodeCall nodeCall1, PinIndex outputPinIndex, NodeCall nodeCall2, PinIndex inputPinIndex)
+{
+	NODESCRIPT_ASSERT(isLinkValid(nodeCall1, outputPinIndex, nodeCall2, inputPinIndex));
+
+	{
+		std::vector<Pin>& nodeOutputs = m_outputPins[nodeCall1][outputPinIndex];
+		std::vector<Pin>::iterator it = std::find(nodeOutputs.begin(), nodeOutputs.end(), Pin(nodeCall2, inputPinIndex));
+		NODESCRIPT_ASSERT(it != nodeOutputs.end());
+		nodeOutputs.erase(it);
+	}
+
+	{
+		std::map<PinIndex, Pin>& nodeInputs = m_inputPins[nodeCall2];
+		std::map<PinIndex, Pin>::iterator it = nodeInputs.find(inputPinIndex);
+		NODESCRIPT_ASSERT(it != nodeInputs.end());
+		nodeInputs.erase(it);
+	}
+}
+#endif
 
 void Script::optimize()
 {
