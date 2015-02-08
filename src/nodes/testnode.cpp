@@ -25,9 +25,7 @@ void TestNode::execute(NodeRuntime* runtime, PinIndex inputPinIndex) const
 	readPin<IntInPin>(runtime, intValue);
 	readPin<FloatInPin>(runtime, floatValue);
 	readPin<StringInPin>(runtime, stringValue);
-	#ifdef NODESCRIPT_VERBOSE
 	std::cout << "Int = " << intValue << " ; Float = " << floatValue << " ; String = " << *stringValue << std::endl;
-	#endif
 	writePin<IntOutPin>(runtime, intValue);
 	writePin<FloatOutPin>(runtime, floatValue);
 	writePin<StringOutPin>(runtime, stringValue);
