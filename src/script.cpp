@@ -34,6 +34,10 @@ void Script::addLink(NodeCall nodeCall1, PinIndex outputPinIndex, NodeCall nodeC
 		getNode(nodeCall1)->debugGetPinType(outputPinIndex),
 		getNode(nodeCall2)->debugGetPinType(inputPinIndex)
 	);
+	NODESCRIPT_ASSERT_MSG(
+		!linkExists(nodeCall1, outputPinIndex, nodeCall2, inputPinIndex),
+		"Trying to add a link that already exists"
+	);
 	m_outputPins[nodeCall1][outputPinIndex].emplace_back(nodeCall2, inputPinIndex);
 	m_inputPins[nodeCall2].emplace(std::piecewise_construct, std::forward_as_tuple(inputPinIndex), std::forward_as_tuple(nodeCall1, outputPinIndex));
 }
@@ -42,11 +46,24 @@ bool Script::isLinkValid(NodeCall nodeCall1, PinIndex outputPinIndex, NodeCall n
 {
 	NODESCRIPT_ASSERT(debugIsNodeCallValid(nodeCall1));
 	NODESCRIPT_ASSERT(debugIsNodeCallValid(nodeCall2));
-	
 	Node* node1 = getNode(nodeCall1);
 	Node* node2 = getNode(nodeCall2);
 	return nodeCall1 != nodeCall2 && node1->getPinTypeId(outputPinIndex) == node2->getPinTypeId(inputPinIndex);
 }
+
+#if defined(NODESCRIPT_DEBUG) || defined(NODESCRIPT_INTROSPECTION)
+bool Script::linkExists(NodeCall nodeCall1, PinIndex outputPinIndex, NodeCall nodeCall2, PinIndex inputPinIndex)
+{
+	std::map<PinIndex, Pin>& nodeInputs = m_inputPins[nodeCall2];
+	std::map<PinIndex, Pin>::iterator it = nodeInputs.find(inputPinIndex);	
+	
+	if (it == nodeInputs.end())
+		return false;
+		
+	const Pin& outputPin = it->second;
+	return outputPin.getNodeCall() == nodeCall1 && outputPin.getIndex() == outputPinIndex;
+}
+#endif
 
 #ifdef NODESCRIPT_INTROSPECTION
 void Script::removeLink(NodeCall nodeCall1, PinIndex outputPinIndex, NodeCall nodeCall2, PinIndex inputPinIndex)

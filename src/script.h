@@ -18,6 +18,10 @@ class Script
 		NodeCall addNode(Node* node);
 		void addLink(NodeCall nodeCall1, PinIndex outputPinIndex, NodeCall nodeCall2, PinIndex inputPinIndex);
 		bool isLinkValid(NodeCall nodeCall1, PinIndex outputPinIndex, NodeCall nodeCall2, PinIndex inputPinIndex);
+		
+		#if defined(NODESCRIPT_DEBUG) || defined(NODESCRIPT_INTROSPECTION)
+		bool linkExists(NodeCall nodeCall1, PinIndex outputPinIndex, NodeCall nodeCall2, PinIndex inputPinIndex);
+		#endif
 
 		#ifdef NODESCRIPT_INTROSPECTION
 		void removeLink(NodeCall nodeCall1, PinIndex outputPinIndex, NodeCall nodeCall2, PinIndex inputPinIndex);
