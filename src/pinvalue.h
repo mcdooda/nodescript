@@ -29,6 +29,9 @@ class PinType
 			enum { Valid = true };	\
 	};								\
 
+#define PIN_TYPE_DECLARE_ID(Type)	\
+	char PinType<Type>::id
+
 #define PIN_TYPE_VALID(Type) PinType<Type>::Valid
 #define PIN_TYPE_ID(Type) &PinType<Type>::id
 #define PIN_TYPE_IMPULSE_ID nullptr

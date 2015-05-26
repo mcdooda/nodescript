@@ -22,14 +22,14 @@ class ScriptEngine
 		const std::map<std::string, Node*>& getAllRegisteredNodes();
 		#endif
 		
-	private:
-		void registerNodes();
-		
 		template <class T>
 		void registerNode()
 		{
 			m_nodeFactories[T::nodeName()] = T::factory;
 		}
+		
+	private:
+		void registerNodes();
 		
 		#ifdef NODESCRIPT_INTROSPECTION
 		void instantiateAllNodes();
