@@ -24,6 +24,7 @@ class Script
 		#endif
 
 		#ifdef NODESCRIPT_INTROSPECTION
+		void removeNode(NodeCall nodeCall);
 		void removeLink(NodeCall nodeCall1, PinIndex outputPinIndex, NodeCall nodeCall2, PinIndex inputPinIndex);
 		#endif
 		

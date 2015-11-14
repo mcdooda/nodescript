@@ -66,6 +66,14 @@ bool Script::linkExists(NodeCall nodeCall1, PinIndex outputPinIndex, NodeCall no
 #endif
 
 #ifdef NODESCRIPT_INTROSPECTION
+void Script::removeNode(NodeCall nodeCall)
+{
+	NODESCRIPT_ASSERT(debugIsNodeCallValid(nodeCall));
+	m_nodes[nodeCall] = nullptr;
+	m_inputPins.erase(nodeCall);
+	m_outputPins.erase(nodeCall);
+}
+
 void Script::removeLink(NodeCall nodeCall1, PinIndex outputPinIndex, NodeCall nodeCall2, PinIndex inputPinIndex)
 {
 	NODESCRIPT_ASSERT(isLinkValid(nodeCall1, outputPinIndex, nodeCall2, inputPinIndex));
@@ -114,10 +122,8 @@ void Script::optimize()
 			#endif
 		}
 	}
-	#ifdef NODESCRIPT_DEBUG
-	#ifdef NODESCRIPT_VERBOSE
+	#if defined(NODESCRIPT_DEBUG) && defined(NODESCRIPT_VERBOSE)
 	std::cerr << "[script] we won " << gain << " bytes" << std::endl;
-	#endif
 	#endif
 }
 
@@ -155,7 +161,11 @@ void Script::getOutputPin(NodeCall nodeCall, PinIndex inputPinIndex, Pin& pin)
 #ifdef NODESCRIPT_DEBUG
 bool Script::debugIsNodeCallValid(NodeCall nodeCall) const
 {
+#ifdef NODESCRIPT_INTROSPECTION
+	return nodeCall >= 0 && nodeCall < static_cast<int>(m_nodes.size()) && m_nodes[nodeCall];
+#else
 	return nodeCall >= 0 && nodeCall < static_cast<int>(m_nodes.size());
+#endif
 }
 #endif
 

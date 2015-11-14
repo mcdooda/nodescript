@@ -17,7 +17,7 @@ TestNode::TestNode()
 	outImpulsePin<ImpulseOutPin>();
 }
 
-void TestNode::execute(NodeRuntime* runtime, PinIndex inputPinIndex) const
+void TestNode::execute(NodeRuntime* runtime, PinIndex /*inputPinIndex*/) const
 {
 	int intValue;
 	float floatValue;

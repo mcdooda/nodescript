@@ -37,7 +37,7 @@ class ConstantValueNode : public FunctionalNode
 			outValuePin<ValueOutPin>();
 		}
 		
-		void execute(NodeRuntime* runtime) const override {}
+		void execute(NodeRuntime* /*runtime*/) const override {}
 		
 		#if defined(NODESCRIPT_DEBUG) || defined(NODESCRIPT_INTROSPECTION)
 		const char* getPinName(PinIndex pinIndex) const override

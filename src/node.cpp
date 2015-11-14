@@ -60,7 +60,7 @@ PinTypeId Node::getPinTypeId(PinIndex pinIndex) const
 	return m_pinTypeIds[pinIndex];
 }
 
-NodeRuntime* Node::createRuntime(ScriptRuntime* scriptRuntime, NodeCall nodeCall) const
+NodeRuntime* Node::createRuntime(ScriptRuntime* /*scriptRuntime*/, NodeCall nodeCall) const
 {
 	return new NodeRuntime(this, nodeCall);
 }

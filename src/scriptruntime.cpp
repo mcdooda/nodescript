@@ -45,8 +45,15 @@ void ScriptRuntime::createNodeRuntimes()
 	NodeCall nodeCall = 0;
 	for (Node* node : m_script->getNodes())
 	{
+#ifdef NODESCRIPT_INTROSPECTION
+		if (node)
+		{
+#endif
 		NodeRuntime* nodeRuntime = node->createRuntime(this, nodeCall);
 		m_nodeRuntimes[nodeCall] = nodeRuntime;
+#ifdef NODESCRIPT_INTROSPECTION
+		}
+#endif
 		++nodeCall;
 	}
 }
