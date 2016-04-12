@@ -14,12 +14,12 @@ class ScriptEngine
 		ScriptEngine();
 		~ScriptEngine();
 		
-		Node* getNodeInstance(const std::string& nodeName);
+		const Node* getNodeInstance(const std::string& nodeName) const;
 		
 		Script* newScript();
 		
 		#ifdef NODESCRIPT_INTROSPECTION
-		const std::map<std::string, Node*>& getAllRegisteredNodes();
+		const std::map<std::string, const Node*>& getAllRegisteredNodes() const;
 		#endif
 		
 		template <class T>
@@ -32,10 +32,10 @@ class ScriptEngine
 		void registerNodes();
 		
 		#ifdef NODESCRIPT_INTROSPECTION
-		void instantiateAllNodes();
+		void instantiateAllNodes() const;
 		#endif
 		
-		std::map<std::string, Node*> m_nodes;
+		mutable std::map<std::string, const Node*> m_nodes;
 		std::map<std::string, NodeFactory> m_nodeFactories;
 }; // ScriptEngine
 

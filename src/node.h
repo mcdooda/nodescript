@@ -190,7 +190,7 @@ class Node
 		
 }; // Node
 
-typedef Node* (*NodeFactory)();
+using NodeFactory = Node* (*)();
 
 #endif // NODE_H
 

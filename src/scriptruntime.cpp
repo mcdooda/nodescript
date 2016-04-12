@@ -43,7 +43,7 @@ void ScriptRuntime::createNodeRuntimes()
 	int numNodes = m_script->getNumNodes();
 	m_nodeRuntimes = new NodeRuntime*[numNodes];
 	NodeCall nodeCall = 0;
-	for (Node* node : m_script->getNodes())
+	for (const Node* node : m_script->getNodes())
 	{
 #ifdef NODESCRIPT_INTROSPECTION
 		if (node)

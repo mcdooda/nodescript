@@ -14,14 +14,14 @@ int main(int argc, char* argv[])
 		{
 			Script* script = engine.newScript();
 		
-			Node* initNode = engine.getNodeInstance("Init");
-			Node* testNode = engine.getNodeInstance("Test Node 1");
-			Node* intValueNode = engine.getNodeInstance("Int Value");
-			Node* floatValueNode = engine.getNodeInstance("Float Value");
-			Node* doubleValueNode = engine.getNodeInstance("Double Value");
-			Node* stringValueNode = engine.getNodeInstance("String Value");
-			Node* doubleToIntCastNode = engine.getNodeInstance("Double To Int Cast");
-			Node* mathAddNode = engine.getNodeInstance("Add");
+			const Node* initNode = engine.getNodeInstance("Init");
+			const Node* testNode = engine.getNodeInstance("Test Node 1");
+			const Node* intValueNode = engine.getNodeInstance("Int Value");
+			const Node* floatValueNode = engine.getNodeInstance("Float Value");
+			const Node* doubleValueNode = engine.getNodeInstance("Double Value");
+			const Node* stringValueNode = engine.getNodeInstance("String Value");
+			const Node* doubleToIntCastNode = engine.getNodeInstance("Double To Int Cast");
+			const Node* mathAddNode = engine.getNodeInstance("Add");
 		
 			NodeCall initCall = script->addNode(initNode);
 			NodeCall intValueCall = script->addNode(intValueNode);

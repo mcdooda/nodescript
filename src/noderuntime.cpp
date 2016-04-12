@@ -118,10 +118,9 @@ int NodeRuntime::getOutputImpulseIndexFromPinIndex(PinIndex pinIndex) const
 void NodeRuntime::optimizeInputValueLinks(ScriptRuntime* scriptRuntime)
 {
 	Script* script = scriptRuntime->getScript();
-	Pin outputPin;
 	for (PinIndex pinIndex = m_node->m_firstInValuePinIndex; pinIndex <= m_node->m_lastInValuePinIndex; ++pinIndex)
 	{
-		script->getOutputPin(m_nodeCall, pinIndex, outputPin);
+		const Pin& outputPin = script->getOutputPin(m_nodeCall, pinIndex);
 		NODESCRIPT_ASSERT_MSG(script->debugIsNodeCallValid(outputPin.getNodeCall()), "The input pin is not connected to an other pin!");
 		NodeRuntime* inputRuntime = scriptRuntime->getNodeCallRuntime(outputPin.getNodeCall());
 		#ifdef NODESCRIPT_DEBUG
@@ -160,22 +159,27 @@ void NodeRuntime::optimizeInputValueLinks(ScriptRuntime* scriptRuntime)
 void NodeRuntime::optimizeOutputImpulseLinks(ScriptRuntime* scriptRuntime)
 {
 	Script* script = scriptRuntime->getScript();
-	std::vector<Pin>* inputPins;
 	for (PinIndex pinIndex = m_node->m_firstOutImpulsePinIndex; pinIndex <= m_node->m_lastOutImpulsePinIndex; ++pinIndex)
 	{
-		script->getInputPins(m_nodeCall, pinIndex, inputPins);
-		int numConnectedPins = std::count_if(inputPins->begin(), inputPins->end(), [](const Pin& pin){ return pin.isConnected(); });
-		int outIndex = getOutputImpulseIndexFromPinIndex(pinIndex);
-		m_outputImpulses[outIndex].reserve(numConnectedPins);
-		
-		for (const Pin& inputPin : *inputPins)
+		if (const std::vector<Pin>* inputPins = script->getInputPins(m_nodeCall, pinIndex))
 		{
-			if (inputPin.isConnected())
+			int numConnectedPins = std::count_if(
+				inputPins->begin(),
+				inputPins->end(),
+				[](const Pin& pin){ return pin.isConnected(); }
+			);
+			int outIndex = getOutputImpulseIndexFromPinIndex(pinIndex);
+			m_outputImpulses[outIndex].reserve(numConnectedPins);
+		
+			for (const Pin& inputPin : *inputPins)
 			{
-				NODESCRIPT_ASSERT_MSG(script->debugIsNodeCallValid(inputPin.getNodeCall()), "The output node #%d is invalid", inputPin.getNodeCall());
-				NodeRuntime* outputRuntime = scriptRuntime->getNodeCallRuntime(inputPin.getNodeCall());
-				NODESCRIPT_ASSERT_MSG(outputRuntime->debugIsInputImpulsePinIndexValid(inputPin.getIndex()), "The input pin #%d is invalid", inputPin.getIndex());
-				m_outputImpulses[outIndex].emplace_back(outputRuntime, inputPin.getIndex());
+				if (inputPin.isConnected())
+				{
+					NODESCRIPT_ASSERT_MSG(script->debugIsNodeCallValid(inputPin.getNodeCall()), "The output node #%d is invalid", inputPin.getNodeCall());
+					NodeRuntime* outputRuntime = scriptRuntime->getNodeCallRuntime(inputPin.getNodeCall());
+					NODESCRIPT_ASSERT_MSG(outputRuntime->debugIsInputImpulsePinIndexValid(inputPin.getIndex()), "The input pin #%d is invalid", inputPin.getIndex());
+					m_outputImpulses[outIndex].emplace_back(outputRuntime, inputPin.getIndex());
+				}
 			}
 		}
 	}

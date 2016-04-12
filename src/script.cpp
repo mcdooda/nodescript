@@ -13,7 +13,7 @@ Script::~Script()
 	
 }
 
-NodeCall Script::addNode(Node* node)
+NodeCall Script::addNode(const Node* node)
 {
 	#ifdef NODESCRIPT_DEBUG
 	node->getNodeName(); // ensures a name is given to the actual node type
@@ -46,8 +46,8 @@ bool Script::isLinkValid(NodeCall nodeCall1, PinIndex outputPinIndex, NodeCall n
 {
 	NODESCRIPT_ASSERT(debugIsNodeCallValid(nodeCall1));
 	NODESCRIPT_ASSERT(debugIsNodeCallValid(nodeCall2));
-	Node* node1 = getNode(nodeCall1);
-	Node* node2 = getNode(nodeCall2);
+	const Node* node1 = getNode(nodeCall1);
+	const Node* node2 = getNode(nodeCall2);
 	return nodeCall1 != nodeCall2 && node1->getPinTypeId(outputPinIndex) == node2->getPinTypeId(inputPinIndex);
 }
 
@@ -137,25 +137,31 @@ void Script::addEntryPoint(NodeCall nodeCall)
 	m_entryPoints.push_back(nodeCall);
 }
 
-Node* Script::getNode(NodeCall nodeCall) const
+const Node* Script::getNode(NodeCall nodeCall) const
 {
 	NODESCRIPT_ASSERT(debugIsNodeCallValid(nodeCall));
 	return m_nodes[nodeCall];
 }
 
-int Script::getNumNodes() const
+const std::vector<Pin>* Script::getInputPins(NodeCall nodeCall, PinIndex outputPinIndex) const
 {
-	return m_nodes.size();
+	std::map<NodeCall, std::map<PinIndex, std::vector<Pin>>>::const_iterator nodeOutputPinsIt = m_outputPins.find(nodeCall);
+	
+	if (nodeOutputPinsIt == m_outputPins.cend())
+		return nullptr;
+	
+	std::map<PinIndex, std::vector<Pin>>::const_iterator connectedPinsIt = nodeOutputPinsIt->second.find(outputPinIndex);
+	
+	if (connectedPinsIt == nodeOutputPinsIt->second.cend())
+		return nullptr;
+	
+	return &connectedPinsIt->second;
 }
 
-void Script::getInputPins(NodeCall nodeCall, PinIndex outputPinIndex, std::vector<Pin>*& pins)
+const Pin& Script::getOutputPin(NodeCall nodeCall, PinIndex inputPinIndex) const
 {
-	pins = &m_outputPins[nodeCall][outputPinIndex];
-}
-
-void Script::getOutputPin(NodeCall nodeCall, PinIndex inputPinIndex, Pin& pin)
-{
-	pin = m_inputPins[nodeCall][inputPinIndex];
+	const std::map<PinIndex, Pin>& nodeInputPins = m_inputPins.at(nodeCall);
+	return nodeInputPins.at(inputPinIndex);
 }
 
 #ifdef NODESCRIPT_DEBUG

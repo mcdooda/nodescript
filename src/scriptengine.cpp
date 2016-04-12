@@ -25,17 +25,17 @@ Script* ScriptEngine::newScript()
 }
 
 #ifdef NODESCRIPT_INTROSPECTION
-const std::map<std::string, Node*>& ScriptEngine::getAllRegisteredNodes()
+const std::map<std::string, const Node*>& ScriptEngine::getAllRegisteredNodes() const
 {
 	instantiateAllNodes();
 	return m_nodes;
 }
 #endif
 
-Node* ScriptEngine::getNodeInstance(const std::string& nodeName)
+const Node* ScriptEngine::getNodeInstance(const std::string& nodeName) const
 {
-	std::map<std::string, Node*>::iterator it = m_nodes.find(nodeName);
-	Node* node;
+	std::map<std::string, const Node*>::const_iterator it = m_nodes.find(nodeName);
+	const Node* node = nullptr;
 	if (it != m_nodes.end())
 	{
 		node = it->second;
@@ -43,9 +43,11 @@ Node* ScriptEngine::getNodeInstance(const std::string& nodeName)
 	else
 	{
 		NODESCRIPT_ASSERT_MSG(m_nodeFactories.find(nodeName) != m_nodeFactories.end(), "The node type \"%s\" is not registered", nodeName.c_str());
-		node = m_nodeFactories[nodeName]();
-		node->optimize();
-		m_nodes[nodeName] = node;
+		const NodeFactory nodeFactory = m_nodeFactories.at(nodeName);
+		Node* newNode = nodeFactory();
+		newNode->optimize();
+		m_nodes[nodeName] = newNode;
+		node = const_cast<const Node*>(newNode);
 	}
 	return node;
 }
@@ -87,7 +89,7 @@ void ScriptEngine::registerNodes()
 }
 
 #ifdef NODESCRIPT_INTROSPECTION
-void ScriptEngine::instantiateAllNodes()
+void ScriptEngine::instantiateAllNodes() const
 {
 	std::for_each(
 		m_nodeFactories.begin(),

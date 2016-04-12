@@ -15,7 +15,7 @@ class Script
 		Script();
 		~Script();
 		
-		NodeCall addNode(Node* node);
+		NodeCall addNode(const Node* node);
 		void addLink(NodeCall nodeCall1, PinIndex outputPinIndex, NodeCall nodeCall2, PinIndex inputPinIndex);
 		bool isLinkValid(NodeCall nodeCall1, PinIndex outputPinIndex, NodeCall nodeCall2, PinIndex inputPinIndex);
 		
@@ -35,21 +35,28 @@ class Script
 		void addEntryPoint(NodeCall nodeCall);
 		inline const std::vector<NodeCall>& getEntryPoints() const { return m_entryPoints; }
 		
-		Node* getNode(NodeCall nodeCall) const;
-		int getNumNodes() const;
-		inline const std::vector<Node*>& getNodes() const { return m_nodes; }
+		const Node* getNode(NodeCall nodeCall) const;
+		inline int getNumNodes() const { return m_nodes.size(); }
+		inline const std::vector<const Node*>& getNodes() const { return m_nodes; }
 		
-		void getInputPins(NodeCall nodeCall, PinIndex outputPinIndex, std::vector<Pin>*& pins);
-		void getOutputPin(NodeCall nodeCall, PinIndex inputPinIndex, Pin& pin);
+		const std::vector<Pin>* getInputPins(NodeCall nodeCall, PinIndex outputPinIndex) const;
+		const Pin& getOutputPin(NodeCall nodeCall, PinIndex inputPinIndex) const;
 		
 		#ifdef NODESCRIPT_DEBUG
 		bool debugIsNodeCallValid(NodeCall nodeCall) const;
 		#endif
 		
 	private:
-		std::vector<Node*> m_nodes;
+		// maps a node instance to a node
+		std::vector<const Node*> m_nodes;
+		
+		// the scripts' entry points (init, maybe others...)
 		std::vector<NodeCall> m_entryPoints;
+		
+		// maps a (node instance, pin index) to a pin
 		std::map<NodeCall, std::map<PinIndex, Pin>> m_inputPins;
+		
+		// maps a (node instance instance, pin index) to a set of connected pins
 		std::map<NodeCall, std::map<PinIndex, std::vector<Pin>>> m_outputPins;
 };
 
