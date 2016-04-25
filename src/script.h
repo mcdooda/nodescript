@@ -42,6 +42,10 @@ class Script
 		const std::vector<Pin>* getInputPins(NodeCall nodeCall, PinIndex outputPinIndex) const;
 		const Pin& getOutputPin(NodeCall nodeCall, PinIndex inputPinIndex) const;
 		
+		#ifdef NODESCRIPT_INTROSPECTION
+		const std::map<PinIndex, std::vector<Pin>>* getOutputPins(NodeCall nodeCall) const;
+		#endif
+		
 		#ifdef NODESCRIPT_DEBUG
 		bool debugIsNodeCallValid(NodeCall nodeCall) const;
 		#endif
@@ -53,10 +57,10 @@ class Script
 		// the scripts' entry points (init, maybe others...)
 		std::vector<NodeCall> m_entryPoints;
 		
-		// maps a (node instance, pin index) to a pin
+		// maps a (node instance, input pin index) to an output pin
 		std::map<NodeCall, std::map<PinIndex, Pin>> m_inputPins;
 		
-		// maps a (node instance instance, pin index) to a set of connected pins
+		// maps a (node instance, output pin index) to a set of input pins
 		std::map<NodeCall, std::map<PinIndex, std::vector<Pin>>> m_outputPins;
 };
 

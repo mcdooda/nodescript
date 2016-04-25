@@ -17,5 +17,7 @@ add_executable(
     ${src}
 )
 
-
-
+target_link_libraries(
+    nodescript
+    yaml-cpp
+)

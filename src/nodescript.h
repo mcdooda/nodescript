@@ -11,6 +11,9 @@
 #include "nodes/castnode.h"
 #include "nodes/math/addnode.h"
 
+#include "yamlserializer.h"
+#include "yamldeserializer.h"
+
 #endif // NODESCRIPT_H
 
 

@@ -1,3 +1,4 @@
+#include <sstream>
 #include "../src/nodescript.h"
 
 #define NUM_NEW_SCRIPT 1
@@ -79,10 +80,25 @@ int main(int argc, char* argv[])
 				StringConstantValueNodeRuntime* stringConstantValueNodeRuntime = scriptRuntime->getNodeCallRuntime<StringConstantValueNodeRuntime>(stringValueCall);
 				stringConstantValueNodeRuntime->setValue(std::string("String#") + std::to_string(j));
 			
-				//std::cout << "Execution #" << j << " ======================================" << std::endl;
+				std::cout << "Execution #" << j << " ======================================" << std::endl;
 				scriptRuntime->execute();
 				delete scriptRuntime;
 			}
+			
+			#ifdef NODESCRIPT_INTROSPECTION
+			std::stringstream serialized;
+			serialized << *script;
+			
+			std::cout << serialized.str() << std::endl;
+			
+			Script deserialized;
+			serialized >> ScriptBuilder(engine, deserialized);
+			
+			std::stringstream reserialized;
+			reserialized << deserialized;
+			
+			NODESCRIPT_ASSERT(serialized.str() == reserialized.str());
+			#endif
 		
 			delete script;
 		}

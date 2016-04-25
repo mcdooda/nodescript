@@ -164,6 +164,18 @@ const Pin& Script::getOutputPin(NodeCall nodeCall, PinIndex inputPinIndex) const
 	return nodeInputPins.at(inputPinIndex);
 }
 
+#ifdef NODESCRIPT_INTROSPECTION
+const std::map<PinIndex, std::vector<Pin>>* Script::getOutputPins(NodeCall nodeCall) const
+{
+	std::map<NodeCall, std::map<PinIndex, std::vector<Pin>>>::const_iterator nodeOutputPinsIt = m_outputPins.find(nodeCall);
+	
+	if (nodeOutputPinsIt == m_outputPins.cend())
+		return nullptr;
+	
+	return &nodeOutputPinsIt->second;
+}
+#endif
+
 #ifdef NODESCRIPT_DEBUG
 bool Script::debugIsNodeCallValid(NodeCall nodeCall) const
 {
